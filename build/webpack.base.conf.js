@@ -37,6 +37,7 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
       'jquery': 'jquery',
+      'axios': 'axios'
     }
   },
   module: {
@@ -78,6 +79,10 @@ module.exports = {
       { //全局加载jquery
         test: require.resolve("jquery"), 
         loader: "expose-loader?$!expose-loader?jQuery"
+      },
+      { //全局加载axios
+        test: require.resolve("axios"), 
+        loader: "expose-loader?$!expose-loader?axios"
       }
     ]
   },

@@ -1,0 +1,39 @@
+/* 头像背景颜色 */
+.ivu-avatar{
+    background:-webkit-gradient(linear, 0 0, right 0, from(rgba(27,225,172,0.8)), to(rgba(39,226,241,0.8)));
+}
+/* 菜单样式 */
+.ivu-menu-light{
+    background: transparent;
+    color: #fff;
+}
+.ivu-menu-light.ivu-menu-vertical .ivu-menu-item{
+    border-left: 2px solid transparent;
+}
+.ivu-menu-submenu-title{
+    background-color: rgba(0,0,0,0.05);
+}
+.ivu-menu{
+    color: #fff;
+}
+.ivu-menu-vertical .ivu-menu-item:hover, .ivu-menu-vertical .ivu-menu-submenu-title:hover{
+    background: -webkit-gradient(linear, left 0, right 0, from(rgba(255,255,255,0.2)), to(transparent));
+}
+.ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu){
+    color: #f8f8f8;
+    border-right: none;
+    border-left: 2px solid #fff;
+    background: -webkit-gradient(linear, left 0, right 0, from(rgba(255,255,255,0.6)), to(transparent));
+}
+.ivu-menu-vertical .ivu-menu-item, .ivu-menu-vertical .ivu-menu-submenu-title{
+    padding: 14px 10px;
+    text-align: left;
+    border-right: none;
+}
+.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item{
+    padding-left: 10px;
+    text-align: center;
+}
+.ivu-menu-vertical.ivu-menu-light:after{
+    display: none;
+}

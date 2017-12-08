@@ -1,13 +1,13 @@
 <template>
-    <div class="login">
-        <div class="login-dialog clearfix">
-            <div class="logo-contain">
-                <img src="../assets/images/logo2.png">
+    <div class="zeus-login">
+        <div class="zeus-login-dialog clearfix">
+            <div class="zeus-logo-contain">
+                <img src="../assets/images/logo3.png">
             </div>
-            <div class="login-form">
-                <div class="system">
+            <div class="zeus-login-form">
+                <div class="zeus-login-system">
                     <div class="name">奎鑫采销系统</div>
-                    <div class="EN">Zeus 2.0</div>
+                    <div class="version">Zeus 2.0</div>
                 </div>
                 <div class="form">
                     <Input class="form-item" v-model="loginParams.userId" placeholder="用户名" style="width: 320px" size="large"></Input>
@@ -22,6 +22,7 @@
     </div>
 </template>
 <script>
+    import grain from './grain.js'
     export default {
         data () {
             return {
@@ -37,41 +38,43 @@
                     password: ''
                 }
             }
+        },
+        mounted() {
+            grain();
         }
-        
     }
 </script>
 <style lang="less" scoped>
-    .login{
+    .zeus-login{
         height: 100%;
         width: 100%;
         background-image: url("../assets/images/bg.png");
         background-size: cover;
-        .login-dialog{
-            position: absolute;
+        .zeus-login-dialog{
+            position: fixed;
             left: 50%;
             top: 50%;
             transform: translate3d(-50%,-50%,0);
             z-index:3;
             width: 1070px;
             height: 610px;
-            .logo-contain{
+            .zeus-logo-contain{
                 float: left;
                 height: 100%;
                 width: 60%;
-                background:-webkit-gradient(linear, 0 0, right bottom, from(rgba(213,225,244,0.9)), to(rgba(83, 97, 144, 0.9)));
+                background:-webkit-gradient(linear, 0 0, right bottom, from(rgba(27,225,172,0.8)), to(rgba(39,226,241,0.8)));
                 img{
                     width: 80%;
                     margin-top: 30%;
                 }
             }
-            .login-form{
+            .zeus-login-form{
                 float: left;
                 height: 100%;
                 width: 40%;
                 background-color: #f7f7f7;
                 position: relative;
-                .system{
+                .zeus-login-system{
                     position: absolute;
                     top: 20%;
                     width: 100%;
@@ -80,9 +83,10 @@
                         font-weight: bold;
                         font-size: 24px;
                     }
-                    .EN{
-                        color: #dbdbdb;
+                    .version{
+                        color: #c8c8c8;
                         font-size: 20px;
+                        font-weight: normal;
                     }
                 }
                 .form{

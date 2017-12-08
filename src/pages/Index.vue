@@ -58,7 +58,7 @@
             margin-right: 10px;
             overflow: hidden;
             border-radius: 5px;
-            padding: 10px;
+            padding: 20px 10px;
             background-color: #fff;
             box-shadow: 1px 1px 10px #ccc;
             min-height: 600px;

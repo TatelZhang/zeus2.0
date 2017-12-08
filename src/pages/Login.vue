@@ -48,7 +48,7 @@
     .zeus-login{
         height: 100%;
         width: 100%;
-        background-image: url("../assets/images/bg.png");
+        background-image: url("../assets/images/bg2.png");
         background-size: cover;
         .zeus-login-dialog{
             position: fixed;

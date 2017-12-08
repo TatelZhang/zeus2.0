@@ -1,6 +1,6 @@
 <template>
     <div class="zeus-table clearfix">
-        <Table stripe border :columns="column" :data="data" :loading="loading"></Table>
+        <Table stripe border :columns="column" :data="data" :loading="loading" height="740"></Table>
         <Page class-name="zeus-pagenation" :total="page.total" :current="page.current" :page-size="page.pageSize" @on-change="handle"></Page>
     </div>
 </template>
@@ -43,7 +43,7 @@
                 axios.get(this.config.url,{params})
                     .then(({data}) => {
                         this.data = data.data.row;
-                        this.page.total = Math.ceil(data.data.totalCount / 15);
+                        this.page.total = Math.ceil(data.data.totalCount / this.page.pageSize);
                         this.loading = false;
                     })
             },

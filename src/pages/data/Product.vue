@@ -14,8 +14,8 @@
                         </FormItem>
                     </Col>
                     <Col span="5">
-                        <FormItem prop="type">
-                            <Input v-model="form.type" size="large" placeholder="供应商地址"></Input>
+                        <FormItem prop="address">
+                            <ZSelect v-model="form.address" size="large" placeholder="供应商所在地" data="/zues/api/supplier/address" keyValue="address-address"/>
                         </FormItem>
                     </Col>
                     <Col span="5">
@@ -25,7 +25,7 @@
                     </Col>
                     <Col span="2">
                         <FormItem prop="spec">
-                            <Button long size="large" icon="ios-search" type="primary">查询</Button>
+                            <Button long size="large" icon="ios-search" type="primary" @click="search">查询</Button>
                         </FormItem>
                     </Col>
                 </Row>
@@ -39,6 +39,7 @@
 </style>
 <script>
     import ZTable from '../components/table';
+    import ZSelect from '../components/select';
     export default {
         data () {
             return {
@@ -154,7 +155,13 @@
             }
         },
         components: {
-            ZTable
+            ZTable,
+            ZSelect
+        },
+        methods: {
+            search() {
+                console.log(this.form);
+            }
         }
     }
 </script>

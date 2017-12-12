@@ -14,17 +14,11 @@
     </div>
 </template>
 <script>
-    import ZHeader from './components/header';
-    import ZMenu from './components/menu';
     export default {
         data () {
             return {
 
             }
-        },
-        components: {
-            ZHeader,
-            ZMenu
         },
         mounted() {
             $("canvas").remove();//删除canvas以免影响页面性能

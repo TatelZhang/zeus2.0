@@ -38,8 +38,6 @@
         
     </style>
     <script>
-        import ZTable from '../components/table';
-        import ZSelect from '../components/select';
         import Emitter from '../mixin/emitter';
         export default {
             data () {
@@ -170,10 +168,6 @@
                 }
             },
             mixins: [Emitter],
-            components: {
-                ZTable,
-                ZSelect
-            },
             methods: {
                 search() {
                     this.$bus.$emit("table-search");

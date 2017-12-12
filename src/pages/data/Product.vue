@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="zeus-search">
-            <Form :model="form">
+            <Form :model="form" ref="search">
                 <Row :gutter="30">
                     <Col span="4">
                         <FormItem prop="spec">
@@ -10,7 +10,7 @@
                     </Col>
                     <Col span="4">
                         <FormItem prop="type">
-                            <Input v-model="form.type" size="large" placeholder="类别"></Input>
+                            <ZSelect v-model="form.type" size="large" placeholder="类别" :data="typeData"></ZSelect>
                         </FormItem>
                     </Col>
                     <Col span="5">
@@ -31,7 +31,7 @@
                 </Row>
             </Form>
         </div>
-        <ZTable :column="table.column" :config="table.config"/>
+        <ZTable :column="table.column" :config="table.config" :query="form" ref="ztable"/>
     </div>
 </template>
 <style lang="less" scoped>
@@ -40,6 +40,7 @@
 <script>
     import ZTable from '../components/table';
     import ZSelect from '../components/select';
+    import Emitter from '../mixin/emitter';
     export default {
         data () {
             return {
@@ -51,12 +52,14 @@
                         }, {
                             title: '长度',
                             key: 'long',
+                            width: 80
                         }, {
                             title: '更新时间',
                             key: 'lastUpdateTime',
                         }, {
                             title: '类别',
                             key: 'type',
+                            width: 80
                         }, {
                             title: '供应商',
                             key: 'supplierName',
@@ -74,7 +77,8 @@
                             sortable: true
                         }, {
                             title: '包装',
-                            key: 'perAmount'
+                            key: 'perAmount',
+                            width: 80
                         }, {
                             title: '支重',
                             render (h, {row}) {//计算单支重量
@@ -113,7 +117,6 @@
                             sortable: true
                         }, {
                             title: '操作',
-                            fixed: 'right',
                             render (h, params) {
                                 return h('div',
                                 [
@@ -140,7 +143,7 @@
                                     },'标记')
                                 ]);
                             },
-                            width: 200
+                            width: 180
                         }
                     ],
                     config: {
@@ -151,16 +154,29 @@
                     spec: '',//规格
                     address: '',//地址
                     type: '',//类型
-                }
+                },
+                typeData: [
+                    {
+                        key: '黑管',
+                        value: '黑管'
+                    }, {
+                        key: '热镀锌',
+                        value: '热镀锌'
+                    }, {
+                        key: '镀锌带',
+                        value: '镀锌带'
+                    }
+                ]
             }
         },
+        mixins: [Emitter],
         components: {
             ZTable,
             ZSelect
         },
         methods: {
             search() {
-                console.log(this.form);
+                this.$bus.$emit("table-search");
             }
         }
     }

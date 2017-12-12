@@ -32,14 +32,17 @@
                         url: '',
                     }
                 }
-            }
+            },
+            query: Object,
         },
         created() {
             this.load();
+            this.$bus.$on("table-search",this.search);
         },
         methods: {
-            load(params={}) {
+            load(param={}) {
                 this.loading = true;
+                var params = Object.assign(param,this.query);
                 axios.get(this.config.url,{params})
                     .then(({data}) => {
                         this.data = data.data.row;
@@ -49,6 +52,9 @@
             },
             handle(page){
                 this.load({page: page,pageSize: this.page.pageSize});
+            },
+            search(){
+                this.load();
             }
         }
     }

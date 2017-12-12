@@ -12,6 +12,10 @@ import './assets/custom-iview.less'
 Vue.config.productionTip = false
 Vue.use(iView);
 
+//事件委托
+var $bus = new Vue({});
+Vue.prototype.$bus = $bus;
+
 new Vue({
   el: '#app',
   router,

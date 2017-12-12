@@ -10,6 +10,7 @@
             :disabled="disabled"
             :placeholder="placeholder"
             :align="align"
+            :clearable="clearable"
             :class="alignCls">
             <Option v-for="item in list" :key="item.key" :value="item.value"></Option>
         </Select>
@@ -30,6 +31,10 @@
                 type: String,
                 default: 'left'
             },
+            clearable: {
+                type: Boolean,
+                default: true
+            }, //单选是否可清空
             data: [Array, String], //data接收数组类型和加载数据的地址
             keyValue: String, //指定key-value,如果不指定默认使用key,value关键字,形如'key-value'
         },
@@ -76,6 +81,7 @@
                         }
                     })
                 }
+                console.log(data);
                 this.list = data;
             },
             setCurrentValue (value) {

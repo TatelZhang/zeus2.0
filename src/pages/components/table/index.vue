@@ -11,7 +11,7 @@
                 data: [],
                 loading: false,
                 page: {
-                    pageSize: 15,
+                    pageSize: this.config.pageSize || 15,
                     total: 1,
                     current: 1
                 }

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '@/pages/Login'
 import Index from '@/pages/Index'
 import Product from '@/pages/order/Product'
+import Cart from '@/pages/order/Cart'
 
 Vue.use(Router)
 
@@ -16,8 +17,12 @@ export default new Router({
       children: [
         {
           path: '/product',
-          name: 'Product',
+          name: 'product',
           component: Product,
+        },{
+          path: '/cart',
+          name: 'cart',
+          component: Cart,
         }
       ]
     }, {

@@ -81,7 +81,6 @@
                         }
                     })
                 }
-                console.log(data);
                 this.list = data;
             },
             setCurrentValue (value) {

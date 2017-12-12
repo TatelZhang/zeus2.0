@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/pages/Login'
 import Index from '@/pages/Index'
-import Product from '@/pages/data/Product'
+import Product from '@/pages/order/Product'
 
 Vue.use(Router)
 

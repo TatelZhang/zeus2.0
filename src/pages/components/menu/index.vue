@@ -3,44 +3,42 @@
         <div class="zeus-logo">
             Zues 2.0
         </div>
-        <Menu width="150" :accordion="true">
-            <Submenu name="1">
+        <Menu width="150" :accordion="true" @on-select="select">
+            <Submenu name="需求管理" v-if="menuList.demand.length > 0">
                 <template slot="title">
                     <Icon type="aperture"></Icon>
                     需求管理
                 </template>
-                <MenuItem name="1-1">带货/需求</MenuItem>
+                <MenuItem :name="item.link" v-for="item in menuList.demand" :key="item.link">
+                    {{item.name}}
+                </MenuItem>
             </Submenu>
-            <Submenu name="2">
+            <Submenu name="宙斯报价" v-if="menuList.order.length > 0">
                 <template slot="title">
                     <Icon type="arrow-graph-down-left"></Icon>
                     宙斯报价
                 </template>
-                <MenuItem name="2-1">
-                    现货查询
+                <MenuItem :name="item.link" v-for="item in menuList.order" :key="item.link">
+                    {{item.name}}
                 </MenuItem>
-                <MenuItem name="2-2">购物车</MenuItem>
-                <MenuItem name="2-3">订单列表</MenuItem>
-                <MenuItem name="2-4">需求报价</MenuItem>
             </Submenu>
-            <Submenu name="3">
+            <Submenu name="供应商录入" v-if="menuList.data.length > 0">
                 <template slot="title">
                     <Icon type="ios-cog"></Icon>
                     供应商录入
                 </template>
-                <MenuItem name="3-1">供应商</MenuItem>
-                <MenuItem name="3-2">价格表</MenuItem>
-                <MenuItem name="3-3">库存表</MenuItem>
+                <MenuItem :name="item.link" v-for="item in menuList.data" :key="item.link">
+                    {{item.name}}
+                </MenuItem>
             </Submenu>
-            <Submenu name="4">
+            <Submenu name="管理员后台" v-if="menuList.manager.length > 0">
                 <template slot="title">
                     <Icon type="cube"></Icon>
                     管理员后台
                 </template>
-                <MenuItem name="4-1">下单审核</MenuItem>
-                <MenuItem name="4-2">成员列表</MenuItem>
-                <MenuItem name="4-3">操作记录</MenuItem>
-                <MenuItem name="4-4">消息管理</MenuItem>
+                <MenuItem :name="item.link" v-for="item in menuList.manager" :key="item.link">
+                    {{item.name}}
+                </MenuItem>
             </Submenu>
         </Menu>
     </div>
@@ -56,12 +54,29 @@
     }
 </style>
 <script>
+    import page from '../page.config';
     export default {
         data () {
             return {
-
+                menuList: {
+                    data: [],
+                    order: [],
+                    demand: [],
+                    manager: []
+                },
             }
         },
         name: 'ZMenu',
+        created() {
+            this.getMenu(2);
+        },
+        methods: {
+            getMenu(index) {
+                this.menuList = page[index];
+            },
+            select(key) {
+                this.$router.push({path: key});
+            }
+        }
     }
 </script>

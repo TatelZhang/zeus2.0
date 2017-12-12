@@ -170,7 +170,7 @@
             mixins: [Emitter],
             methods: {
                 search() {
-                    this.$bus.$emit("table-search");
+                    this.$refs.ztable.search();
                 }
             }
         }

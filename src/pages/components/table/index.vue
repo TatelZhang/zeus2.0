@@ -37,7 +37,6 @@
         },
         created() {
             this.load();
-            this.$bus.$on("table-search",this.search);
         },
         methods: {
             load(param={}) {

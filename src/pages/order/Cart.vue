@@ -62,7 +62,7 @@
                         }
                     ],
                     config: {
-                        url: '/zues/api/chart/list',
+                        url: '/zues/api/price/list',
                         pageSize: 100,
                     }
                 },

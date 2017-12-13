@@ -4,6 +4,7 @@ import Login from '@/pages/Login'
 import Index from '@/pages/Index'
 import Product from '@/pages/order/Product'
 import Cart from '@/pages/order/Cart'
+import Price from '@/pages/data/Price'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
           path: '/cart',
           name: 'cart',
           component: Cart,
+        },
+        {
+          path: '/price',
+          name: 'price',
+          component: Price
         }
       ]
     }, {

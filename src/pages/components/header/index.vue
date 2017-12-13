@@ -2,7 +2,7 @@
     <div class="zeus-header">
         <Avatar icon="person" size="small" class="avatar"/>
         <span class="user-name">费仁杰</span>
-        <span class="logout"><Icon type="power"/>退出登录</span>
+        <span class="logout" @click="logout"><Icon type="power"/>退出登录</span>
     </div>
 </template>
 <style scoped lang="less">
@@ -40,6 +40,17 @@
 
             }
         },
-        name: "ZHeader"
+        name: "ZHeader",
+        methods: {
+            logout() {
+                axios.post('/zues/api/user/logout',{})
+                    .then( rs => {
+                        if(rs.data.code === 200) {
+                            this.$Message.info(rs.data.msg);
+                            this.$router.push({path: '/login'});
+                        }
+                    })
+            }
+        }
     }
 </script>

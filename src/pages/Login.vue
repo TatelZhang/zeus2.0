@@ -9,14 +9,22 @@
                     <div class="name">奎鑫采销系统</div>
                     <div class="version">Zeus 2.0</div>
                 </div>
-                <div class="form">
-                    <Input class="form-item" v-model="loginParams.userId" placeholder="用户名" style="width: 320px" size="large"></Input>
-                    <Input class="form-item" v-model="loginParams.password" placeholder="密码" style="width: 320px" size="large"></Input>
-                    <Select class="form-item" v-model="loginParams.comId" style="width:320px; text-align:left" clearable placeholder="选择公司" size="large">
-                        <Option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                    </Select>
-                    <Button style="width: 320px" class="form-item" type="primary" long size="large">登录</Button>
-                </div>
+                <Form :model="loginParams" class="form">
+                    <FormItem>
+                        <Input class="form-item" v-model="loginParams.userId" placeholder="用户名" style="width: 320px" size="large"></Input>
+                    </FormItem>
+                    <FormItem>
+                        <Input class="form-item" v-model="loginParams.password" placeholder="密码" style="width: 320px" size="large"></Input>
+                    </FormItem>
+                    <FormItem>
+                        <Select class="form-item" v-model="loginParams.comId" style="width:320px; text-align:left" clearable placeholder="选择公司" size="large">
+                            <Option v-for="item in companyList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem>
+                        <Button style="width: 320px" class="form-item" type="primary" long size="large" @click="login">登录</Button>
+                    </FormItem>
+                </Form>
             </div>
         </div>
     </div>
@@ -29,7 +37,28 @@
                 companyList: [
                     {
                         value: '00',
-                        label: '奎鑫南京'
+                        label: '奎鑫总公司'
+                    }, {
+                        value: '01',
+                        label: '南京奎鑫'
+                    }, {
+                        value: '02',
+                        label: '武汉奎鑫'
+                    }, {
+                        value: '03',
+                        label: '西安奎鑫'
+                    }, {
+                        value: '04',
+                        label: '长春奎鑫'
+                    }, {
+                        value: '05',
+                        label: '沈阳奎鑫'
+                    }, {
+                        value: '06',
+                        label: '山东奎鑫'
+                    }, {
+                        value: '07',
+                        label: '南昌奎鑫'
                     }
                 ],
                 loginParams: {
@@ -40,7 +69,19 @@
             }
         },
         mounted() {
-            grain();
+            // grain();
+        },
+        methods: {
+            login() {
+                axios.post('/zues/api/user/login',this.loginParams)
+                    .then( rs=> {
+                        if(rs.data.code === 200){
+                            this.$router.replace({path: '/product'});
+                        }else{
+                            this.$Message.info(rs.data.msg);
+                        }
+                    })
+            }
         }
     }
 </script>
@@ -50,8 +91,9 @@
         width: 100%;
         background-image: url("../assets/images/bg2.png");
         background-size: cover;
+        position: relative;
         .zeus-login-dialog{
-            position: fixed;
+            position: absolute;
             left: 50%;
             top: 50%;
             transform: translate3d(-50%,-50%,0);

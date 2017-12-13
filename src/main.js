@@ -17,6 +17,35 @@ Vue.use(ZComponents);
 //事件委托
 var $bus = new Vue({});
 Vue.prototype.$bus = $bus;
+const getCookie = function(name) {
+  var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+  if (arr = document.cookie.match(reg))
+      return decodeURI(arr[2]);
+  else
+      return null;
+}
+Vue.prototype.getCookie = getCookie;
+
+function isLogin() {
+  var userId = getCookie('userId');
+  var comId = getCookie('comId');
+  var userRole = getCookie('userRole');
+  if(userId && comId && userRole) return true;
+  return false;
+}
+
+router.beforeEach((to, from, next) => {
+  iView.LoadingBar.start();
+  if(to.name !== 'Login' && !isLogin()){
+    next('login');
+  }else{
+    next();
+  }
+});
+
+router.afterEach((to, from, next) => {
+  iView.LoadingBar.finish();
+});
 
 new Vue({
   el: '#app',

@@ -1,5 +1,5 @@
 <template>
-    <div class="zeus-select">
+    <div :class="prefixCls">
         <input
             ref="input"
             type="hidden"

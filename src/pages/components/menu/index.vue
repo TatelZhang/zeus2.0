@@ -68,7 +68,7 @@
         },
         name: 'ZMenu',
         created() {
-            this.getMenu(2);
+            this.getMenu(0);
         },
         methods: {
             getMenu(index) {

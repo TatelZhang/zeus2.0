@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="price">
     <div class="zeus-search">
       <Row>
         <Col span="17">
@@ -202,11 +202,11 @@
     margin-bottom: 10px;
     
   }
-  input[type=number]{
+  .price input[type=number]{
     -moz-appearance:textfield;
   }
-  input[type=number]::-webkit-inner-spin-button,
-  input[type=number]::-webkit-outer-spin-button{
+  .price input[type=number]::-webkit-inner-spin-button,
+  .price input[type=number]::-webkit-outer-spin-button{
     -webkit-appearance: none;
     margin: 0;
   }

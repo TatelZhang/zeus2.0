@@ -16,7 +16,7 @@
                 <Input v-model="searchFrom.supplierName" size="large" placeholder="供应商：支持模糊查询"></Input>
               </Col>
               <Col span="5">
-              <ZSelect v-model="searchFrom.address" size="large" placeholder="供应商所在地" data="/zues/api/supplier/address" keyValue="address-address"></ZSelect>
+                <ZSelect v-model="searchFrom.address" size="large" placeholder="供应商所在地" data="/zues/api/supplier/address" keyValue="address-address"></ZSelect>
               </Col>
               <Col span="3">
                 <FormItem prop="spec">
@@ -35,7 +35,7 @@
       </Row>
       <Row>
         <Col span="2">
-          <input type="number" class="ivu-input ivu-input-large" style="border-top-right-radius:0;border-bottom-right-radius:0;border-right:0;">
+          <input type="number" v-model="adjustPrice" class="ivu-input ivu-input-large" style="border-top-right-radius:0;border-bottom-right-radius:0;border-right:0;">
         </Col>
         <Col span="8" align="left">
           <ButtonGroup size="large">
@@ -145,8 +145,7 @@
           config: {
             url: '/zues/api/price/list'
           }
-        }
-        ,
+        },
         materialType: [
           {
             key: '黑管',
@@ -163,7 +162,8 @@
           status: false,
           currPrice: 0,
           supplierValueId: null,
-        }
+        },
+        adjustPrice: 10
       }
     },
     watch: {

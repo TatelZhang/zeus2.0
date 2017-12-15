@@ -5,7 +5,7 @@ import Index from '@/pages/Index'
 import Product from '@/pages/order/Product'
 import Cart from '@/pages/order/Cart'
 // import Price from '@/pages/data/Price'
-
+import Supplier from '@/pages/data/Supplier'
 Vue.use(Router)
 
 export default new Router({
@@ -24,11 +24,15 @@ export default new Router({
           path: '/cart',
           name: 'cart',
           component: Cart,
-        },
-        {
+        },{
           path: '/price',
           name: 'price',
           component: (resolve) => require(['@/pages/data/Price'], resolve)
+        },{
+          path: '/supplier',
+          name: 'supplier',
+          // component: (resolve) => require(['@/pages/data/Supplier'], resolve)
+          component: Supplier
         }
       ]
     }, {

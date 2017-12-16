@@ -33,6 +33,10 @@ export default new Router({
           name: 'supplier',
           // component: (resolve) => require(['@/pages/data/Supplier'], resolve)
           component: Supplier
+        },{
+          path: '/test',
+          name: 'Test',
+          component: (resolve) => require(['@/pages/Test'], resolve)
         }
       ]
     }, {

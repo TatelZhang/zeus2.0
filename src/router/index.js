@@ -43,7 +43,7 @@ export default new Router({
           component: (resolve) => require(['@/pages/Test'], resolve)
         },{
           path: '/inventory',
-          name: 'Inventory',
+          name: 'inventory',
           meta: {title: '库存表'},
           component: (resolve) => require(['@/pages/data/Inventory'], resolve)
         }

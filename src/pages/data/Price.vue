@@ -6,11 +6,10 @@
           <Form :model="searchFrom">
             <Row :gutter="10">
               <Col span="5">
-                <Input v-model="searchFrom.spec" placeholder="规格：支持模糊查询" size="large" clearable></Input>
+                <Input v-model="searchFrom.spec" placeholder="规格：支持模糊查询" size="large"></Input>
               </Col>
               <Col span="4">
-                <ZSelect v-model="searchFrom.type" size="large" placeholder="类别" :data="materialType">
-                </ZSelect>
+                <ZSelect v-model="searchFrom.type" size="large" placeholder="类型" :data="materialType"></ZSelect>
               </Col>
               <Col span="5">
                 <Input v-model="searchFrom.supplierName" size="large" placeholder="供应商：支持模糊查询"></Input>

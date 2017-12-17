@@ -8,7 +8,7 @@
               <Input v-model="search.supplierName" placeholder="供应商名称" size="large"></Input> 
             </Col>
             <Col span="3">
-              <ZSelect v-model="search.address" size="large" data="/zues/api/supplier/address" keyValue="address-address"></ZSelect>
+              <ZSelect v-model="search.address" size="large" data="/zues/api/supplier/address" keyValue="address-address" placeholder="供应商所在地"></ZSelect>
             </Col>
             <Col span="2">
               <Button long size="large" icon="ios-search" type="primary" @click="searchSupplier">查询</Button>

@@ -35,6 +35,8 @@ function isLogin() {
 }
 
 router.beforeEach((to, from, next) => {
+  document.title = to.meta.title
+  // console.log(to)
   iView.LoadingBar.start();
   if(to.name !== 'Login' && !isLogin()){
     next('login');

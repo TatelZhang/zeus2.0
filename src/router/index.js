@@ -20,23 +20,32 @@ export default new Router({
           path: '/product',
           name: 'product',
           component: Product,
+          meta: {title: '现货查询'}
         },{
           path: '/cart',
           name: 'cart',
           component: Cart,
+          meta: {title: '购物车'}
         },{
           path: '/price',
           name: 'price',
-          component: (resolve) => require(['@/pages/data/Price'], resolve)
+          component: (resolve) => require(['@/pages/data/Price'], resolve),
+          meta: {title: '价格表'}
         },{
           path: '/supplier',
           name: 'supplier',
           // component: (resolve) => require(['@/pages/data/Supplier'], resolve)
-          component: Supplier
+          component: Supplier,
+          meta: {title: '供应商'}
         },{
           path: '/test',
           name: 'Test',
           component: (resolve) => require(['@/pages/Test'], resolve)
+        },{
+          path: '/inventory',
+          name: 'Inventory',
+          meta: {title: '库存表'},
+          component: (resolve) => require(['@/pages/data/Inventory'], resolve)
         }
       ]
     }, {

@@ -20,8 +20,12 @@
       </TabPane>
       <TabPane label="运费信息">
         <Row>
-
+          <div class="daily-input">
+            <Button type="info">每日运费录入</Button>
+          </div>
+          <br>
         </Row>
+        <ZTable :column="daily.column" :config="daily.config"></ZTable>
       </TabPane>
     </Tabs>
   </div>
@@ -103,6 +107,49 @@
           config: {
             url: '/zues/api/supplier/list'
           }
+        },
+        daily: {
+          column: [
+            {
+              title: '所在地',
+              key: 'address'
+            },{
+              title: '运费(元/吨)',
+              key: 'freight'
+            },{
+              title: '最近更新时间',
+              render: (h, p) => {
+                let {row:{lastUpdateTime}} = p
+                // console.log(typeof lastUpdateTime, lastUpdateTime)
+                let time = Number(lastUpdateTime)
+                if(!time) return 
+                return new Date(time).toLocaleString()
+              }
+            },{
+              title: '操作',
+              align: 'center',
+              render: (h) => {
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'warning'
+                    },
+                    style: {
+                      marginRight: '20px'
+                    }
+                  }, '修改'),
+                  h('Button', {
+                    props: {
+                      type: 'error'
+                    }
+                  }, '删除')
+                ])
+              }
+            }
+          ],
+          config: {
+            url: '/zues/api/freight/list'
+          }
         }
       }
     },
@@ -117,5 +164,9 @@
   .supplier-tabs{
     min-height: 500px;
     padding-bottom: 20px;
+  }
+  .daily-input{
+    /* margin-bottom: 20px; */
+    text-align: left;
   }
 </style>

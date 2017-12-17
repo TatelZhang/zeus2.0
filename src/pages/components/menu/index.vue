@@ -3,7 +3,7 @@
         <div class="zeus-logo">
             Zues 2.0
         </div>
-        <Menu width="150" :accordion="true" @on-select="select">
+        <Menu width="150" :accordion="true" @on-select="select" :active-name="currMenu">
             <Submenu name="需求管理" v-if="menuList.demand.length > 0">
                 <template slot="title">
                     <Icon type="aperture"></Icon>
@@ -76,6 +76,13 @@
             },
             select(key) {
                 this.$router.push({path: key});
+            }
+        },
+        computed: {
+            currMenu () {
+                // return this.$route.path
+                // console.log(this.$route)
+                return this.$route.path
             }
         }
     }

@@ -20,23 +20,23 @@ export default new Router({
           path: '/product',
           name: 'product',
           component: Product,
-          meta: {title: '现货查询'}
+          meta: {title: '现货查询', page: '宙斯报价'}
         },{
           path: '/cart',
           name: 'cart',
           component: Cart,
-          meta: {title: '购物车'}
+          meta: {title: '购物车', page: '宙斯报价'}
         },{
           path: '/price',
           name: 'price',
           component: (resolve) => require(['@/pages/data/Price'], resolve),
-          meta: {title: '价格表'}
+          meta: {title: '价格表', page: '供应商录入'}
         },{
           path: '/supplier',
           name: 'supplier',
           // component: (resolve) => require(['@/pages/data/Supplier'], resolve)
           component: Supplier,
-          meta: {title: '供应商'}
+          meta: {title: '供应商', page: '供应商录入'}
         },{
           path: '/test',
           name: 'Test',
@@ -44,8 +44,13 @@ export default new Router({
         },{
           path: '/inventory',
           name: 'inventory',
-          meta: {title: '库存表'},
+          meta: {title: '库存表', page: '供应商录入'},
           component: (resolve) => require(['@/pages/data/Inventory'], resolve)
+        },{
+          path: '/order',
+          name: 'order',
+          component: (resolve) => require(['@/pages/order/Order'], resolve),
+          meta: {title: '订单列表', page: '宙斯报价'}
         }
       ]
     }, {

@@ -3,7 +3,7 @@
         <div class="zeus-logo">
             Zues 2.0
         </div>
-        <Menu width="150" :accordion="true" @on-select="select" :active-name="currMenu">
+        <Menu width="150" :accordion="true" @on-select="select" :active-name="currMenu" :open-names="opened">
             <Submenu name="需求管理" v-if="menuList.demand.length > 0">
                 <template slot="title">
                     <Icon type="aperture"></Icon>
@@ -83,6 +83,10 @@
                 // return this.$route.path
                 // console.log(this.$route)
                 return this.$route.path
+            },
+            opened () {
+                let currPage = this.$route.meta.page
+                return [currPage]
             }
         }
     }

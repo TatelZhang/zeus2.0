@@ -51,6 +51,11 @@ export default new Router({
           name: 'order',
           component: (resolve) => require(['@/pages/order/Order'], resolve),
           meta: {title: '订单列表', page: '宙斯报价'}
+        },{
+          path: '/demand',
+          name: 'demand',
+          component: (resolve) => require(['@/pages/demand/Demand'], resolve),
+          meta: {title: '带货直发', page: '需求管理'}
         }
       ]
     }, {

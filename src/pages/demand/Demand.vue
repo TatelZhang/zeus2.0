@@ -27,13 +27,15 @@
       <br>
       <div style="text-align: left;font-size: 20px">需求列表：</div>
       <Tabs>
-        <TabPane label="未报价需求"></TabPane>
-        <TabPane label="待反馈需求"></TabPane>
+        <TabPane label="未报价需求" @click="changeThis">
+          <ZTable :column="table.column" :config="table.config"></ZTable>
+        </TabPane>
+        <TabPane label="待反馈需求">
+        </TabPane>
         <TabPane label="已反馈报价"></TabPane>
         <TabPane label="未成交需求"></TabPane>
         <TabPane label="成交需求"></TabPane>
       </Tabs>
-      <ZTable :column="table.column" :config="table.config"></ZTable>
     </div>
   </div>
 </template>
@@ -53,31 +55,47 @@
               }
             },
             {
-              title: '销售'
+              title: '销售',
+              key: 'userId'
             },{
-              title: '销售'
+              title: '客户名称',
+              key: 'customerName'
             },{
-              title: '销售'
+              title: '提交时间',
+              key: 'createTime'
             },{
-              title: '销售'
+              title: '报价时间',
+              key: 'priceTime'
             },{
-              title: '销售'
+              title: '反馈时间',
+              key: 'feedbackTime'
             },{
-              title: '销售'
+              title: '报价时长'
             },{
-              title: '销售'
+              title: '电话',
+              key: 'customerPhone'
             },{
-              title: '销售'
+              title: '需求明细'
             },{
-              title: '销售'
+              title: '采购',
+              key: 'priceUser'
             },{
-              title: '销售'
-            },
+              title: '成交结果',
+              state: 'state'
+            },{
+              title: '原因',
+              key: 'dealReason'
+            },{
+              title: '操作'
+            }
           ],
           config: {url:'/zues/api/demand/list'}
         }
       }
+    },
+    methods: {
+      changeThis () {
+      }
     }
-    
   }
 </script>

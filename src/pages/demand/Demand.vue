@@ -1,26 +1,26 @@
 <template>
   <div>
     <div class="ivu-row">
-      <div class="ivu-col ivu-col-span-3">
-        <Input placeholder="销售名称" size="large"></Input>
+      <div class="ivu-col ivu-col-span-3 input-item" style="margin-right: 30px;">
+        <Input placeholder="销售名称" size="large" v-model="searchDemand.userId"></Input>
       </div>
-      <div class="ivu-col ivu-col-span-3">
-        <Input placeholder="客户名称" size="large"></Input>
+      <div class="ivu-col ivu-col-span-3" style="margin-right: 30px;">
+        <Input placeholder="客户名称" size="large" v-model="searchDemand.customerName"></Input>
       </div>
       <div class="ivu-col ivu-col-span-1">
         <span style="line-height: 36px;font-size: 14px">提交日期:</span>
       </div>
       <div class="ivu-col ivu-col-span-3">
-        <DatePicker type="date" placeholder="Select date" style="width: 200px"  size="large"></DatePicker>
+        <DatePicker type="date" placeholder="开始日期" style="width: 200px"  size="large" v-model="searchDemand.createTime"></DatePicker>
       </div>
       <div class="ivu-col ivu-col-span-1" style="width:1%">
         <span style="line-height: 36px;font-size: 14px">-</span>
       </div>
       <div class="ivu-col ivu-col-span-3">
-        <DatePicker type="date" placeholder="Select date" style="width: 200px"  size="large"></DatePicker>
+        <DatePicker type="date" placeholder="结束日期" style="width: 200px"  size="large" v-model="searchDemand.endTime"></DatePicker>
       </div>
       <div class="ivu-col ivu-col-span-2">
-        <Button type="primary" icon="ios-search" size="large" long>查询</Button>
+        <Button type="primary" icon="ios-search" size="large" long @click="test">查询</Button>
       </div>
     </div>
     <div>
@@ -43,6 +43,12 @@
   export default {
     data () {
       return {
+        searchDemand: {
+          userId: '',
+          customerName: '',
+          createTime: '',
+          endTime: ''
+        },
         table: {
           column: [
             {
@@ -59,10 +65,15 @@
               key: 'userId'
             },{
               title: '客户名称',
-              key: 'customerName'
+              key: 'customerName',
             },{
               title: '提交时间',
-              key: 'createTime'
+              width: 200,
+              key: 'createTime',
+              render: (h, p)=>{
+                let {row: {createTime}} = p
+                return new Date(createTime).toLocaleString()
+              }
             },{
               title: '报价时间',
               key: 'priceTime'
@@ -75,7 +86,20 @@
               title: '电话',
               key: 'customerPhone'
             },{
-              title: '需求明细'
+              title: '需求明细',
+              render: (h, p) =>{
+                return h('Button',{
+                  props:{
+                    type: 'info'
+                    }, 
+                    on: {
+                      click: () =>{
+                        this.$Message.info("hello")
+                      }
+                    }
+                  }, 
+                '点击查看')
+              }
             },{
               title: '采购',
               key: 'priceUser'
@@ -95,7 +119,12 @@
     },
     methods: {
       changeThis () {
+      },
+      test () {
+        console.log(this.searchDemand)
       }
     }
   }
 </script>
+<style>
+</style>

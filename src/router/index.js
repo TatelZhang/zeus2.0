@@ -50,17 +50,33 @@ export default new Router({
         },{
           path: '/inventory',
           name: 'inventory',
-          meta: {title: '库存表', page: '供应商录入'},
-          component: (resolve) => require(['@/pages/data/Inventory'], resolve)
+          component: (resolve) => require(['@/pages/data/Inventory'], resolve),
+          meta: {title: '库存表', page: '供应商录入'}
         },{
           path: '/demand',
           name: 'demand',
           component: (resolve) => require(['@/pages/demand/Demand'], resolve),
           meta: {title: '带货直发', page: '需求管理'}
         },{
-          path: '/test',
-          name: 'Test',
-          component: (resolve) => require(['@/pages/Test'], resolve)
+          path: '/verify',
+          name: 'verify',
+          component: (resolve) => require(['@/pages/manager/Verify'], resolve),
+          meta: {title: '订单审核', page: '管理员后台'}
+        },{
+          path: '/member',
+          name: 'member',
+          component: (resolve) => require(['@/pages/manager/Member'], resolve),
+          meta: {title: '成员管理', page: '管理员后台'}
+        },{
+          path: '/record',
+          name: 'record',
+          component: (resolve) => require(['@/pages/manager/Record'], resolve),
+          meta: {title: '操作记录', page: '管理员后台'}
+        },{
+          path: '/message',
+          name: 'message',
+          component: (resolve) => require(['@/pages/manager/Message'], resolve),
+          meta: {title: '消息管理', page: '管理员后台'}
         }
       ]
     }, {

@@ -27,6 +27,16 @@ export default new Router({
           component: Cart,
           meta: {title: '购物车', page: '宙斯报价'}
         },{
+          path: '/demandprice',
+          name: 'demandprice',
+          component: (resolve) => require(['@/pages/order/demandprice'], resolve),
+          meta: {title: "需求报价", page: "宙斯报价"}
+        },{
+          path: '/order',
+          name: 'order',
+          component: (resolve) => require(['@/pages/order/Order'], resolve),
+          meta: {title: '订单列表', page: '宙斯报价'}
+        },{
           path: '/price',
           name: 'price',
           component: (resolve) => require(['@/pages/data/Price'], resolve),
@@ -38,24 +48,19 @@ export default new Router({
           component: Supplier,
           meta: {title: '供应商', page: '供应商录入'}
         },{
-          path: '/test',
-          name: 'Test',
-          component: (resolve) => require(['@/pages/Test'], resolve)
-        },{
           path: '/inventory',
           name: 'inventory',
           meta: {title: '库存表', page: '供应商录入'},
           component: (resolve) => require(['@/pages/data/Inventory'], resolve)
         },{
-          path: '/order',
-          name: 'order',
-          component: (resolve) => require(['@/pages/order/Order'], resolve),
-          meta: {title: '订单列表', page: '宙斯报价'}
-        },{
           path: '/demand',
           name: 'demand',
           component: (resolve) => require(['@/pages/demand/Demand'], resolve),
           meta: {title: '带货直发', page: '需求管理'}
+        },{
+          path: '/test',
+          name: 'Test',
+          component: (resolve) => require(['@/pages/Test'], resolve)
         }
       ]
     }, {

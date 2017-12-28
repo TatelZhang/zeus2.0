@@ -1,7 +1,11 @@
 <template>
   <div class="message-container">
     <div class="ivu-row">
-        <span class="margin-right-10">创建日期：</span>
+        <span class="margin-right-10">消息类型：</span>
+        <Select v-model="searchMessage.messageType" placeholder="消息类型" size="large" clearable style="display: inline-block;width: 211px;">
+            <Option v-for="item in messageType" :key="item.value" :value="item.value">{{item.key}}</Option>
+          </Select>
+        <span class="margin-10">创建日期：</span>
         <DatePicker placeholder="开始日期" size="large" v-model="searchMessage.startTime"></DatePicker>
         <span class="margin-10">-</span>
         <DatePicker placeholder="结束日期" size="large" v-model="searchMessage.endTime"></DatePicker>
@@ -25,7 +29,7 @@
           </Select>
         </div>
         <br />
-        <Input v-model="submitMessage.message" placeholder="填写消息内容" type="textarea" :row="4"></Input>
+        <Input v-model="submitMessage.message" placeholder="填写消息内容" type="textarea" :rows="6"></Input>
       </div>
     </Modal>
     <Modal>
@@ -101,13 +105,14 @@
             }
           ],
           config: {
-            url: '/zues/api/message/list?messageType'
+            url: '/zues/api/message/list'
           }
         },
         messageType: [{ value: '1', key: '供应商' }, { value: '2', key: '需求' },{ value: '3', key: '现货' }],
         searchMessage: {
           startTime: '',
-          endTime: ''
+          endTime: '',
+          messageType: ''
         },
         modalMessage: {
           status: false,
@@ -126,6 +131,7 @@
       startSearch () {
         this.$refs.message.search()
       },
+      // 更新Modal框为新增
       startAdd () {
         this.modalMessage.head = "添加消息"
         this.modalMessage.icon = "android-add"
@@ -134,6 +140,7 @@
         this.submitMessage.messageType = ''
         this.modalMessage.status = true
       },
+      // 更新Modal框为更改
       startChange (row) {
         this.modalMessage.head = "修改消息"
         this.modalMessage.icon = "edit"
@@ -142,6 +149,7 @@
         this.submitMessage.messageId = row.messageId 
         this.modalMessage.status = true
       },
+      // 新增message或更改message
       addMessage () {
         let targeturl = '/zues/api/message/add'
         
@@ -149,9 +157,7 @@
           targeturl = '/zues/api/message/update'
         }
         axios.post(targeturl, this.submitMessage).then(res=>{
-          // console.log(res)
           let {data, status} = res
-          // console.log(data, status)
           if(status === 200){
             if(data.code === 200){
               this.$Message.success(data.msg)
@@ -164,6 +170,7 @@
           }
         })
       },
+      // 删除message
       removeMessage (messageId) {
         this.$Modal.confirm({
           title: '警告',

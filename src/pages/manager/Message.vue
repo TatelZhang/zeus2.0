@@ -197,17 +197,5 @@
   #app .message-container{
     text-align: left;
   }
-  .margin-10{
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-  .margin-left-10 {
-    margin-left: 10px;
-  }
-  .margin-right-10 {
-    margin-right: 10px;
-  }
-  .message-container {
-    font-size: 14px;
-  }
+ 
 </style>

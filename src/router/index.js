@@ -77,6 +77,10 @@ export default new Router({
           name: 'message',
           component: (resolve) => require(['@/pages/manager/Message'], resolve),
           meta: {title: '消息管理', page: '管理员后台'}
+        },{
+          path: '/test',
+          name: 'test',
+          component: (resolve) => require(['@/pages/Test'], resolve)
         }
       ]
     }, {

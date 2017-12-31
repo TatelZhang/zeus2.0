@@ -69,6 +69,7 @@
             },{
               title: '操作',
               width: 200,
+              align: 'center',
               render: (h, p) => {
                 let {row: {messageId},row} = p
                 return h('div', {

@@ -4,7 +4,7 @@
         <span class="margin-right-10">时间：</span>
         <DatePicker size="large" placeholder="选择日期" @on-change="changeCreateTime"></DatePicker>
         <span class="margin-10">操作人：</span>
-        <Input style="display:inline-block; width:211px;" size="large" placeholder="支持模糊搜索" v-model="recordSearch.operate" :value="'yyyy-MM-dd'"></Input>
+        <Input style="display:inline-block; width:211px;" size="large" placeholder="支持模糊搜索" v-model="recordSearch.operate"></Input>
         <Button size="large" type="info" class="margin-10" @click="searchRecord">查询</Button>
     </div>
     <br />

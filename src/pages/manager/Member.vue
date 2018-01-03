@@ -36,6 +36,15 @@
         </div>
       </div>
     </Modal>
+    <Modal v-model="modalStatus.authChange" @on-ok="uploadAuths">
+      <h2 slot="header" style="color:#2db7f5;text-align:center">
+        <Icon type="edit"></Icon>
+        <span>修改权限</span>
+      </h2>
+      <CheckboxGroup style="font-size: 14px;" v-model="currentAuth">
+      <Checkbox v-for="item in authNameList" :key="item.key" :label="item.key" style="font-size: 14px;">{{item.value}}</Checkbox>
+      </CheckboxGroup>
+    </Modal>
   </div>
 </template>
 <script>
@@ -126,26 +135,32 @@
               }
             },
             {title: '操作', 
-            width: 360,
+            width: 400,
             align: 'center',
             render: (h, p)=>{
-              let {row: {userId}} = p
+              let {row} = p
               return h('div',{'class': 'operate'}, [
                 h('Button', 
-                {props: {type: 'info'}}, 
+                {props: {type: 'info'},
+                on: {
+                  click: ()=>{
+                    this.modalStatus.authChange = true
+                    this.listCurrentAuth(row)
+                  }
+                }}, 
                 '修改权限'),
                 h('Button', 
                 {props: {type: 'success'}}, 
                 '快速设置'),
                 h('Button', 
                 {props: {type: 'warning'}}, 
-                '重置'),
+                '重置密码'),
                 h('Button', 
                 {props: {type: 'error'},
                 on: {click: ()=>{
-                  this.removeMember(userId)
+                  this.removeMember(row.userId)
                 }}}, 
-                '删除')
+                '删除用户')
               ])
             }},
           ],
@@ -158,7 +173,32 @@
           comId: '',
           password: ''
         },
-        memberModal: false
+        memberModal: false,
+        authNameList: [
+          {key: 'queryAuth', value: '查询'},
+          {key: 'orderAuth', value: '采购'},
+          {key: 'supplierAuth', value: '供应商设置'},
+          {key: 'valueAuth', value: '价格表'},
+          {key: 'inventoryAuth', value: '库存表'},
+          {key: 'demandAuth', value: '定制需求'},
+          {key: 'adminAuth', value: '管理员'}
+        ],
+        modalStatus: {
+          authChange: false,
+          authQuick: false,
+          passwdReset: false
+        },
+        currentAuth: [],
+        paramsWillBeUpload: {
+          operator: 0,
+          queryAuth: 0,
+          orderAuth: 0,
+          supplierAuth: 0,
+          valueAuth: 0,
+          inventoryAuth: 0,
+          demandAuth: 0,
+          adminAuth: 0
+        }
       }
     },
     methods: {
@@ -192,7 +232,7 @@
           onOk: ()=>{
             axios.post('/zues/api/user/delete', {operator: userId})
             .then(res=>{
-              console.log(res)
+              // console.log(res)
               if(res.status === 200){
                 let {data} = res
                 if(data.code === 200){
@@ -204,6 +244,38 @@
               }
             })
           }
+        })
+      },
+      listCurrentAuth (row){
+        this.currentAuth = [] // 清除当前权限
+        this.paramsWillBeUpload.operator = row.userId
+        for(var auth in row){
+          if(row[auth] === 1){
+            this.currentAuth.push(auth)
+          }
+        }
+      },
+      cleanUploadParams () {
+        for(let item in this.paramsWillBeUpload){
+          this.paramsWillBeUpload[item] = 0
+        }
+      },
+      uploadAuths () {
+        for(let auth of this.currentAuth){
+          this.paramsWillBeUpload[auth] = 1
+        }
+        axios.post('/zues/api/userrole/update', this.paramsWillBeUpload)
+        .then(res=>{
+          if(res.status === 200){
+                let {data} = res
+                if(data.code === 200){
+                  this.$Message.success(data.msg)
+                  this.$refs.member.search()
+                  this.cleanUploadParams()
+                }else{
+                  this.$Message.error(data.msg)
+                }
+              }
         })
       }
     }

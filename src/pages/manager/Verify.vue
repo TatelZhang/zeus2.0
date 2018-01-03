@@ -18,6 +18,11 @@
   </div>
 </template>
 <script>
+  function getComId() {
+    let cookies = document.cookie
+    let res = cookies.match(/comId=(\d*);/)
+    return res[1]
+  }
   export default {
     data () {
       return {
@@ -121,13 +126,14 @@
         // console.log(row)
         this.verifyParams.orderNo = row.orderNo
         this.verifyParams.operator = row.userId
+        this.verifyParams.comId = getComId()
+        // console.log(this.verifyParams)
         this.$Modal.confirm({
           title: '',
           content: '是否确认审核？',
           onOk: ()=>{
             axios.post('/zues/api/order/verify', this.verifyParams)
             .then(res=>{
-              // console.log(res)
               if(res.status === 200){
                 let {data} = res
                 if(data.code === 200){
@@ -144,6 +150,9 @@
           }
         })
       }
+    },
+    mounted () {
+      // console.log(this.$store.getters.comId)
     }
   }
 </script>

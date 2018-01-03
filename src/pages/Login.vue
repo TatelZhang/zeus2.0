@@ -14,7 +14,7 @@
                         <Input class="form-item" v-model="loginParams.userId" placeholder="用户名" style="width: 320px" size="large"></Input>
                     </FormItem>
                     <FormItem>
-                        <Input class="form-item" v-model="loginParams.password" placeholder="密码" style="width: 320px" size="large"></Input>
+                        <Input class="form-item" v-model="loginParams.password" placeholder="密码" style="width: 320px" size="large" type="password"></Input>
                     </FormItem>
                     <FormItem>
                         <Select class="form-item" v-model="loginParams.comId" style="width:320px; text-align:left" clearable placeholder="选择公司" size="large">

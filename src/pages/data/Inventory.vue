@@ -1,7 +1,7 @@
 <template>
   <div class="inventory-container">
     <div class="ivu-row">
-      <span class="margin-right-10">用户ID：</span>
+      <span class="margin-right-10">规格：</span>
       <Input v-model="inventory.spec" placeholder="规格：支持模糊查询" size="large" style="display:inline-block; width:211px;"></Input>
       <span class="margin-10">类型：</span>
       <ZSelect v-model="inventory.type" size="large" placeholder="类型" :data="materialType" style="display:inline-block; width:211px;"></ZSelect>
@@ -10,7 +10,7 @@
       <span class="margin-10">供应商名称：</span>
       <ZSelect v-model="inventory.address" size="large" placeholder="供应商所在地" data="/zues/api/supplier/address" keyValue="address-address" style="display:inline-block; width:211px;"></ZSelect>
       <Button size="large" icon="ios-search" type="primary" @click="searchInventory" class="margin-10">查询</Button>
-      <Upload action="/zues/api/upload/excel?type=inventory" style="float:right" @on-error="uploadError"> 
+      <Upload action="/zues/api/upload/excel?type=inventory" style="float:right"> 
         <Button type="info" icon="ios-cloud-upload-outline" size="large">上传库存表</Button>
         <span style="cursor:pointer;margin-left: 5px;">(供应商名称_类型_日期[库存表])</span>
       </Upload>

@@ -61,6 +61,8 @@
               title: '库存数量(件)',
               key: 'inventoryAmount',
               sortable: true,
+              className: 'inventory-column',
+              align: 'center'
             },{
               title: '包装',
               key: 'perAmount'
@@ -161,5 +163,11 @@
   #app .inventory-container{
     text-align: left;
   }
-  
+  .ivu-table th.inventory-column{
+    /* background-color: #2db7f5;
+    color: #fff; */
+    }
+  .ivu-table td.inventory-column{
+    color: #2db7f5;
+    }
 </style>

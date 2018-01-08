@@ -32,6 +32,7 @@
         </Col>
       </Row>
     </div>
+    <br>
     <ZTable :column="table.column" :config="table.config" :query="searchFrom" ref="price"/>
 
     <Modal v-model="priceModal"> 
@@ -72,7 +73,7 @@
             {
               title: '规格',
               key: 'spec',
-              width: 150,
+              // width: 150,
               // align: 'center'
             },
             {
@@ -89,12 +90,14 @@
             {
               title: '供应商',
               key: 'supplierName',
-              align: 'center'
+              // align: 'center'
             },
             {
               title: '出厂价(元/吨)',
               key: 'value',
               sortable: true,
+              align: 'center',
+              className: 'price-column'
               // align: 'center'
             },
             {
@@ -254,4 +257,11 @@
     -webkit-appearance: none;
     margin: 0;
   }
+  .ivu-table th.price-column{
+        /* background-color: #2db7f5;
+        color: #fff; */
+    }
+  .ivu-table td.price-column{
+        color: #2db7f5;
+    }
 </style>

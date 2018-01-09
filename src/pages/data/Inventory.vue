@@ -19,7 +19,7 @@
     <ZTable :column="table.column" :config="table.config" :query="inventory" ref="inventory"></ZTable>
     <Modal v-model="inventoryModal" @on-ok="changeInventory">
       <h2 slot="header" style="color:#f90;text-align:center">
-        <span style="font-size: 14px;">更改库存数量</span>
+        <span>更改库存数量</span>
       </h2>
       <div class="ivu-input-wrapper ivu-input-wrapper-large ivu-input-type ivu-input-group ivu-input-group-large ivu-input-group-with-prepend">
         <div class="ivu-input-group-prepend">

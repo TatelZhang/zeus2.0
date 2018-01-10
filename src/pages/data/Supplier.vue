@@ -65,6 +65,23 @@
         <input type="number" class="ivu-input ivu-input-large" v-model="freightAdd.freight">
       </div>
     </Modal>
+    <Modal v-model="modalStatus.freightChange" @on-ok="changeFreight">
+      <h2 slot="header" style="color:#f90;text-align:center">
+        <span>更改当前运费</span>
+      </h2> 
+      <div class="ivu-input-wrapper ivu-input-wrapper-large ivu-input-type ivu-input-group ivu-input-group-large ivu-input-group-with-prepend" style="margin-bottom: 14px">
+        <div class="ivu-input-group-prepend">
+          <span>供应商所在地</span>
+        </div>
+        <input type="value" class="ivu-input ivu-input-large" v-model="currFreight.address">
+      </div>
+      <div class="ivu-input-wrapper ivu-input-wrapper-large ivu-input-type ivu-input-group ivu-input-group-large ivu-input-group-with-prepend">
+        <div class="ivu-input-group-prepend">
+          <span>运费</span>
+        </div>
+        <input type="number" class="ivu-input ivu-input-large" v-model="currFreight.freight">
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -107,7 +124,6 @@
             key: 'isValide',
             render: (h, p)=>{
               let {row: {isValide}, row} = p
-              // let status = isValide
               return h('Select', {
                 props: {
                   value: isValide
@@ -128,18 +144,15 @@
             render: (h, p)=>{
               let {row} = p
                return h('Button', {
-                   props: {
-                     type: 'warning'
-                   },
-                   on: {
-                     click: () => {
-                      //  let {address, benifit, benifitAdjust, freight, inventoryTime, isValide, supplierId, supplierName, valueTime} = row
-                      //  let r = {address, benifit, benifitAdjust, freight, inventoryTime, isValide, supplierId, supplierName, valueTime}
-                       this.showBenifit(row)
-                     }
-                   }
-                 }, '修改优惠政策')
-              
+                props: {
+                  type: 'warning'
+                },
+                on: {
+                  click: () => {
+                    this.showBenifit(row)
+                  }
+                }
+              }, '修改优惠政策')
              }
             }
           ],
@@ -166,7 +179,8 @@
             },{
               title: '操作',
               align: 'center',
-              render: (h) => {
+              render: (h, p) => {
+                let {row} = p
                 return h('div', [
                   h('Button', {
                     props: {
@@ -174,11 +188,23 @@
                     },
                     style: {
                       marginRight: '20px'
+                    },
+                    on: {
+                      click: () => {
+                        this.changeCurrFreightStatus(row)
+                      }
                     }
                   }, '修改'),
                   h('Button', {
                     props: {
                       type: 'error'
+                    },
+                    on: {
+                      click: () => {
+                        this.$Modal.confirm({title: '提示',content: '确认删除？',onOk: ()=>{
+                          this.removeFreight(row.freightId)
+                        }})
+                      }
                     }
                   }, '删除')
                 ])
@@ -191,7 +217,8 @@
         },
         modalStatus: {
           benifitChange: false,
-          freightAdd: false
+          freightAdd: false,
+          freightChange: false
         },
         currSupplier: {
           supplierName: '',
@@ -202,6 +229,11 @@
         freightAdd: {
           address: '',
           freight: "0"
+        },
+        currFreight: {
+          address: '',
+          freight: '',
+          freightId: ''
         }
       }
     },
@@ -227,8 +259,6 @@
         this.currSupplier.address = row.address
         this.currSupplier.benifit = row.benifit
         this.currSupplier.supplierId = row.supplierId
-        // this.currSupplier.row = row
-        // this.currSupplier.comId = ''
         this.modalStatus.benifitChange = true
       },
       changeBenifit () {
@@ -246,7 +276,7 @@
         if(this.freightAdd.address){
           axios.post('/zues/api/freight/add', this.freightAdd).then(res=>{
             let {status, data} = res
-            if(status){
+            if(status === 200){
               if(data.code === 200){
                 this.$Message.success(data.msg)
                 this.$refs.daily.search()
@@ -263,7 +293,36 @@
           },0)
           this.$Message.error("请输入供应商所在地")
         }
-      }
+      },
+      removeFreight (id) {
+        id = id.toString()
+        axios.post('/zues/api/freight/remove', {freightId: id}).then(res => {
+          let {status, data} = res
+          if(status === 200 && data.code === 200){
+            this.$Message.success(data.msg)
+            this.$refs.daily.search()
+          }else{
+            this.$Message.error(data.msg)
+          }
+        })
+      },
+      changeCurrFreightStatus (row) {
+        this.currFreight.address = row.address
+        this.currFreight.freight = row.freight
+        this.currFreight.freightId = row.freightId
+        this.modalStatus.freightChange = true
+      },
+      changeFreight () {
+        axios.post('/zues/api/freight/update', this.currFreight).then(res => {
+          let {status, data} = res
+          if(status === 200 && data.code === 200){
+            this.$Message.success(data.msg)
+            this.$refs.daily.search()
+          }else{
+            this.$Message.error(data.msg)
+          }
+        })
+      } 
     }
   }
 </script>

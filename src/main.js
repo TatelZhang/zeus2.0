@@ -9,7 +9,7 @@ import 'jquery'
 import 'iview/dist/styles/iview.css'
 import './assets/base.less'
 import './assets/custom-iview.less'
-
+import '../static/utils'
 Vue.config.productionTip = false
 Vue.use(iView);
 Vue.use(ZComponents);

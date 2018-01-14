@@ -80,8 +80,6 @@
         },
         computed: {
             currMenu () {
-                // return this.$route.path
-                // console.log(this.$route)
                 return this.$route.path
             },
             opened () {

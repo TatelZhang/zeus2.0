@@ -58,6 +58,11 @@ export default new Router({
           component: (resolve) => require(['@/pages/demand/Demand'], resolve),
           meta: {title: '带货直发', page: '需求管理'}
         },{
+          path: '/demandup',
+          name: 'demandup',
+          component: (resolve) => require(['@/pages/demand/Demandup'], resolve),
+          meta: {title: '需求上传', page: '需求管理'}
+        },{
           path: '/verify',
           name: 'verify',
           component: (resolve) => require(['@/pages/manager/Verify'], resolve),

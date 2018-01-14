@@ -1,0 +1,62 @@
+#app .demand {
+    /* text-align: left; */
+}
+.customer-list{
+    border: 2px dashed #d3dce6;
+    margin: 5px 0;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.customer-list:hover {
+    border: 2px dashed #f7ba2a;
+}
+.demand-detail .info-item{
+    display:inline-block;
+    font-size: 13px;
+    margin-right: 30px;
+}
+.demand-detail .info-item:last-child{
+    margin: 0;
+}
+.demand-detail .info-item .label {
+    font-weight: bold
+}
+.demand-upload .upload-item{
+    display: inline-block;
+    font-size: 13px;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.demand-upload .upload-item:last-child{
+    margin-right: 0;
+}
+.upload-content .customer-label {
+    margin: 10px 0;
+}
+.upload-content .customer-label:first-child {
+    margin: 0 0 10px;
+}
+
+
+.demandup-container .title{
+    font-size: 14px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+.demandup-container .title:first-child {
+    margin: 0 0 10px;
+}
+.demandup-container .d-input .item1{
+    display: inline-block;
+    margin-right: 20px;
+}
+.demandup-container .head {
+    font-size: 13px; 
+    font-weight: bold;
+    margin: 20px 0px 10px;
+}
+.demandup-container .head .desc {
+    font-weight: normal;
+    font-size: 13px;
+}

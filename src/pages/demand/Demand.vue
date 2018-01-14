@@ -14,9 +14,10 @@
     <div style="text-align: left;font-size: 20px; margin: 20px 0;">
       <span>需求列表：</span>
       <div class="ivu-alert ivu-alert-success">
-        <Button size="large" class="margin-right-10" type="primary" @click="modalStatus.upDemand = true">需求上传</Button>
+        <Button size="large" class="margin-right-10" type="primary" @click="demandUpload">需求上传</Button>
         <Button size="large" class="margin-right-10" type="primary">导出需求</Button>
         <Button size="large" class="margin-right-10" type="primary">导出需求详情</Button>
+        <Button @click="modalStatus.upDemand = true">弹框</Button>
       </div>
       <Tabs v-model="currTableHeaderFlag">
         <TabPane label="未报价需求" name="noPriceDemand"></TabPane>
@@ -27,19 +28,79 @@
       </Tabs> 
       <ZTable :column="currHeaders" :config="table.config" ref="table" :query="searchParams"></ZTable>
     </div>
-    <Modal 
-    v-model="modalStatus.upDemand" 
-    width="60%"
-    :mask-closable="false"
-    >
-    <h2 slot="header" style="color: #f60;text-align:center">
-      <span>需求上传</span>
-    </h2>
-    <div>
-      <div>
+    <!-- 需求上传Modal -->
+    <Modal v-model="modalStatus.upDemand" width="40%" :mask-closable="false" class="demand-upload">
+      <h2 slot="header" style="color: #f60;text-align:center">
+        <span>需求上传</span>
+      </h2>
+      <div class="upload-content">
+        <div style="margin-bottom: 10px;">
+          <div style="font-size: 14px;">规格信息录入：</div>
+          <div class="ivu-alert ivu-alert-info">
+            <div class="upload-item" style="width: 26%;">
+              <Input placeholder="例:50*50*3.0*6">
+                <span slot="prepend">规格：</span> 
+              </Input>
+            </div>
+            <div class="upload-item" style="max-width: 16%">
+              <Input>
+                <span slot="prepend">类型：</span>
+              </Input>
+            </div>
+            <div class="upload-item" style="max-width: 17%">
+              <Input>
+                <span slot="prepend">数量</span>
+                <span slot="append">支</span>
+              </Input>
+            </div>
+            <div class="upload-item" style="max-width: 18%">
+              <Input>
+                <span slot="prepend">重量</span>
+                <span slot="append">吨</span>
+              </Input>
+            </div>
+            <div class="upload-item">
+              <Button type="warning">添加规格</Button>
+            </div>
+          </div>
+          <Table :columns="uploadDemand.header" :data="uploadDemand.data" stripe border></Table>
+        </div>
+          <div style="font-size: 14px;">客户信息录入：</div>
+          <div class="ivu-alert ivu-alert-info">
+            <div style="display: inline-block; width: 50%;">
+                <Input size="large" class="customer-label"><span slot="prepend">目的地</span></Input>
+                <Input size="large" class="customer-label"><span slot="prepend">客户</span></Input>
+                <Input size="large" class="customer-label"><span slot="prepend">电话</span></Input>
+            </div>
+            <div  style="display: inline-block;width:40%;vertical-align: top; float: right;">
+              <Collapse>
+                <Panel>
+                  <span>选择已有客户</span> 
+                  <div slot="content">
+                    <div>
+                      <Input placeholder="输入客户名称" style="display:inline-block;width: 70%;"></Input>
+                      <Button type="info">搜索</Button>
+                    </div>
+                    <div class="customer-list">
+                      <span>上海</span>
+                      <span>嘉勋</span>
+                      <span>15123120321</span>
+                    </div>
+                    <div class="customer-list">
+                      <span>上海</span>
+                      <span>嘉勋</span>
+                      <span>15123120321</span>
+                    </div>
+                    <Page :total="5" size="small"></Page>
+                  </div>
+                </Panel>
+              </Collapse>
+            </div>
+          </div>
+          <Input type="textarea" :rows="4" placeholder="填写备注"></Input>
       </div>
-    </div>
     </Modal>
+    <!-- 需求详细Modal -->
     <Modal v-model="modalStatus.demandDetail"  width="50%" class="demand-detail">
       <h2 slot="header" style="color: #f60;text-align:center">
         <span>需求明细</span>
@@ -69,6 +130,7 @@
   </div>
 </template>
 <script>
+  import './index.css'
   export default {
     data () {
       return {
@@ -208,7 +270,17 @@
           destination: '',
           demandWeight: '',
           comment: '',  // 销售备注
-          priceComment: '' // 采购备注
+          priceComment: '', // 采购备注
+        },
+        uploadDemand: { // 需求上传data
+          header: [
+            {title: '规格', key: ''},
+            {title: '类型', key: ''},
+            {title: '数量', key: ''},
+            {title: '重量', key: ''},
+            {title: '操作', }
+          ],
+          data: []
         }
       }
     },
@@ -271,6 +343,9 @@
             this.demandDetail.loading = false
           }
         })
+      },
+      demandUpload () {
+        this.$router.push({path: '/demandup'})
       }
     },
     mounted () {
@@ -278,28 +353,3 @@
     }
   }
 </script>
-<style>
-#app .demand {
-  /* text-align: left; */
-}
-.customer-list{
-  border: 2px dashed #d3dce6;
-  margin-bottom: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-.customer-list:hover {
-  border: 2px dashed #f7ba2a;
-}
-.demand-detail .info-item{
-  display:inline-block;
-  font-size: 13px;
-  margin-right: 30px;
-}
-.demand-detail .info-item:last-child{
-  margin: 0;
-}
-.demand-detail .info-item .label {
-  font-weight: bold
-}
-</style>

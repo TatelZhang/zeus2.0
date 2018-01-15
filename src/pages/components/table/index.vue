@@ -36,7 +36,7 @@
             query: Object,
         },
         created() {
-            this.load();
+            this.load({pageSize: this.page.pageSize});
         },
         methods: {
             load(param={}) {
@@ -45,7 +45,8 @@
                 axios.get(this.config.url,{params})
                     .then(({data}) => {
                         this.data = data.data.row;
-                        this.page.total = Math.ceil(data.data.totalCount / this.page.pageSize);
+                        // this.page.total = Math.ceil(data.data.totalCount / this.page.pageSize);
+                        this.page.total = data.data.totalCount;
                         this.loading = false;
                     })
             },

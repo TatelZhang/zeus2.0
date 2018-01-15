@@ -106,7 +106,8 @@
             }
           ],
           config: {
-            url: '/zues/api/message/list'
+            url: '/zues/api/message/list',
+            pageSize: 15
           }
         },
         messageType: [{ value: '1', key: '供应商' }, { value: '2', key: '需求' },{ value: '3', key: '现货' }],

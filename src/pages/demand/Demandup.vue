@@ -14,11 +14,11 @@
           </div>
           <div class="item1">
             <span>数量(支)：</span>
-            <InputNumber  style="display:inline-block; width:211px;" size="large" v-model="specParams.demandAmount"></InputNumber>
+            <InputNumber  style="display:inline-block; width:211px;" size="large" v-model="specParams.demandAmount" :min="0"></InputNumber>
           </div>
           <div class="item1">
             <span>重量(吨)：</span>
-            <InputNumber style="display:inline-block; width:211px;" size="large" v-model="specParams.demandWeight"></InputNumber>
+            <InputNumber style="display:inline-block; width:211px;" size="large" v-model="specParams.demandWeight" :min="0"></InputNumber>
           </div>
           <Button type="warning" size="large" @click="addSpecItem">添加参数</Button>
         </div> 
@@ -29,9 +29,10 @@
     <div class="ivu-row">
       <div class="title">客户信息录入：</div>
       <div class="ivu-alert ivu-alert-success">
+        <div class="head">从客户列表中选择</div>
         <Collapse style="width: 50%;" v-model="customerInfos.panel">
           <Panel name="1">
-            <span>选择已有客户</span> 
+            <span>客户列表</span> 
             <div slot="content">
               <div>
                 <Input placeholder="输入客户名称" style="display:inline-block;max-width: 90%;" size="large" v-model="customerInfos.customerName"></Input>
@@ -41,13 +42,13 @@
                 <span>{{item.destination}}</span>
                 <span>{{item.customerName}}</span>
                 <span>{{item.customerPhone}}</span>
-                <span style="color: red; float: right">删除</span>
+                <span style="color: red; float: right" @click.stop="removeCustomer(item.customerId)">删除</span>
               </div>
               <Page :total="customerInfos.totalCount" size="small" :page-size="customerInfos.pageSize" @on-change="getCustomerList"></Page>
             </div>
           </Panel>
         </Collapse>
-        <div class="head">当前录入参数列表：<span class="desc">请录入客户信息</span></div>
+        <div class="head">手动录入客户信息：<span class="desc">请录入客户信息</span></div>
         <div class="d-input">
           <div class="item1">
             <span>目的地：</span>
@@ -61,6 +62,11 @@
             <span>电话：</span>
             <Input style="display:inline-block; width:211px;" size="large" v-model="demandParams.customerPhone"></Input>
           </div>
+          <div class="item1">
+            <Button type="primary" size="large" @click="addCustomer">添加到客户列表</Button>
+          </div>
+          <div class="head">填写备注：</div>
+          <Input type="textarea" :rows="3" placeholder="备注信息" v-model="uploadDetail.comment"></Input>
         </div>
       </div>
     </div>
@@ -81,9 +87,29 @@
             {title: '类型', key: 'type'},
             {title: '数量(支)', key: 'demandAmount'},
             {title: '重量(吨)', key: 'demandWeight'},
-            {title: '操作', }
+            {title: '操作', 
+            width: 100,
+            align: 'center',
+            render: (h, p) => {
+              return h('div',{
+                style: {
+                  textAlign: 'center'
+                }
+              }, 
+              [h('Button', {
+                props: {
+                  type: 'error'
+                },
+                on: {
+                  click: ()=>{
+                    this.removeSpecItem(p.index)
+                  }
+                }
+              },'删除')])
+            }}
           ],
-          data: []
+          data: [],
+          comment: ''
         },
         specParams: {
           spec: '',
@@ -123,6 +149,11 @@
           this.$Message.error({content: '请完善规格参数信息',duration: 5})
         }
       },
+      // 删除specItem
+      removeSpecItem (index) {
+        this.uploadDetail.data.splice(index, 1)
+        this.saveLocal()
+      },
       // 清除输入框中的数据
       clearSpecParams () {
         for(let key in this.specParams){
@@ -134,6 +165,7 @@
         let str = JSON.stringify(this.uploadDetail.data)
         localStorage.setItem('uploadDemandList', str)
       },
+      // 确认需求上传
       addDemand () {
         if(this.uploadDetail.data.length === 0){
           this.$Notice.error({title: '请添加产品参数', duration: 5}) 
@@ -144,9 +176,9 @@
         }
         let params = Object.assign({}, this.demandParams, {demandDetails: this.uploadDetail.data})
         axios.post('/zues/api/demand/add', params).then(res=>{
-          console.log(res)
+          // console.log(res)
           this.$router.push({path: '/demand'})
-          localStorage.setItem('uploadDemandList', '[]')
+          localStorage.setItem('uploadDemandList', '[]') // 需求上传后清除本地存储参数列表
           this.$Notice.success({title: '需求上传成功', duration: 5})
         })
       },
@@ -174,7 +206,30 @@
         this.demandParams.customerName = item.customerName
         this.demandParams.customerPhone = item.customerPhone
 
-        this.customerInfos.panel = ''
+        this.customerInfos.panel = '' // 折叠面板关闭
+      },
+      // 删除客户信息
+      removeCustomer (customerId) {
+        axios.post('/zues/api/customer/remove', {customerId}).then(res=>{
+          let {status, data} = res
+          if(status === 200 && data.code === 200){
+            this.$Message.success(data.msg)
+            this.getCustomerList()
+          }
+        })
+      },
+      // 添加客户信息
+      addCustomer () {
+        if(this.isCustomerValid){
+          axios.post('/zues/api/customer/add', this.demandParams).then(res=>{
+            let {status, data} = res
+            if(status === 200 && data.code === 200)
+              this.$Message.success(data.msg)
+              this.getCustomerList()
+          })
+        }else{
+          this.$Notice.error({title: '请完善客户信息', duration: 5})
+        }
       }
     },
     computed: {

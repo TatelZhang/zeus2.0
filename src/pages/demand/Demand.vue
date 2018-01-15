@@ -11,8 +11,8 @@
       <DatePicker type="date" placeholder="结束日期" style="width: 200px"  size="large" v-model="searchParams.endTime"></DatePicker>
       <Button class="margin-10" type="info" icon="ios-search" size="large" @click="searchDemand">查询</Button>
     </div>
-    <div style="text-align: left;font-size: 20px; margin: 20px 0;">
-      <span>需求列表：</span>
+    <div style="text-align: left; margin: 20px 0;">
+      <span style="font-size: 20px;">需求列表：</span>
       <div class="ivu-alert ivu-alert-success">
         <Button size="large" class="margin-right-10" type="primary" @click="demandUpload">需求上传</Button>
         <Button size="large" class="margin-right-10" type="primary">导出需求</Button>

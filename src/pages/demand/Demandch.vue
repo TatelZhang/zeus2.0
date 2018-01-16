@@ -72,11 +72,11 @@
     </div>
     <div class="">
       <Button size="large" type="warning" @click="backTo">返回需求管理</Button>
-      <Button size="large" type="success" @click="checkData">提交需求</Button>
+      <Button size="large" type="success" @click="checkData">提交更改</Button>
     </div>
     <Modal v-model="modalStatus.uploadDemand"  width="50%" class="demand-detail" @on-ok="addDemand">
       <h2 slot="header" style="color: #f60;text-align:center">
-        <span>需求上传确认</span>
+        <span>需求更改确认</span>
       </h2>
       <div>
         <div class="ivu-alert ivu-alert-info">
@@ -146,7 +146,8 @@
         demandParams: {
           destination: '',
           customerName: '',
-          customerPhone: ''
+          customerPhone: '',
+          demandNo: ''
         },
         customerInfos: {
           list: [],
@@ -162,10 +163,39 @@
       }
     },
     methods: {
-      // 获取本地存储产品参数信息
-      getSpecDataFromLocal () {
-        let data = localStorage.getItem('uploadDemandList')
-        this.uploadDetail.data = JSON.parse(data)
+      initPage(){
+        let data = this.$route.params
+        if(data.status) {
+          this.saveDemandInfoLocal(data)
+        }
+        else {
+          data = this.getDemandInfoLocal()
+          if(!data.status) return 
+        }
+        this.loadData(data)
+      },
+      // 加载页面数据
+      loadData (data) {
+        this.demandParams.destination = data.destination
+        this.demandParams.customerName = data.customerName
+        this.demandParams.customerPhone = data.customerPhone
+        this.demandParams.demandNo = data.demandNo
+        this.uploadDetail.comment = data.comment
+        this.getDetailFromDemandNo(data.demandNo)
+      },
+      getDetailFromDemandNo (demandNo) {
+        axios.get('/zues/api/demand/detail?demandNo=' + demandNo).then(({status, data}) => {
+          if(status === 200 && data.code === 200){
+              this.uploadDetail.data = data.data
+          }
+        })
+      },
+      saveDemandInfoLocal (data) {
+        localStorage.setItem('demandChangeInfo', JSON.stringify(data))
+      },
+      getDemandInfoLocal () {
+        let data = localStorage.getItem('demandChangeInfo')
+        return JSON.parse(data)
       },
       // 添加specItem
       addSpecItem () {
@@ -173,7 +203,6 @@
           this.uploadDetail.data = [...this.uploadDetail.data]
           this.uploadDetail.data.push(this.specItem)
           this.clearSpecParams()
-          this.saveLocal()
         }else{
           this.$Message.error({content: '请完善规格参数信息',duration: 5})
         }
@@ -181,18 +210,12 @@
       // 删除specItem
       removeSpecItem (index) {
         this.uploadDetail.data.splice(index, 1)
-        this.saveLocal()
       },
       // 清除输入框中的数据
       clearSpecParams () {
         for(let key in this.specParams){
           this.specParams[key] = null
         }
-      },
-      // 保存产品参数列表到本地
-      saveLocal () {
-        let str = JSON.stringify(this.uploadDetail.data)
-        localStorage.setItem('uploadDemandList', str)
       },
       checkData () {
         if(this.uploadDetail.data.length === 0){
@@ -204,12 +227,11 @@
         }
         this.modalStatus.uploadDemand = true
       },
-      // 确认需求上传
+      // 确认需求更改
       addDemand () {
         let params = Object.assign({}, this.demandParams, {demandDetails: this.uploadDetail.data, comment: this.uploadDetail.comment})
-        axios.post('/zues/api/demand/add', params).then(res=>{
-          localStorage.setItem('uploadDemandList', '[]') // 需求上传后清除本地存储参数列表
-          this.$Notice.success({title: '需求上传成功', duration: 5})
+        axios.post('/zues/api/demand/submitudapte', params).then(res=>{
+          this.$Notice.success({title: '需求更改成功', duration: 5})
           this.$router.push({path: '/demand'})
         })
       },
@@ -313,8 +335,7 @@
       }
     },
     mounted () {
-      // console.log(this.$route)
-      this.getSpecDataFromLocal()
+      this.initPage()
       this.getCustomerList()
     }
   }

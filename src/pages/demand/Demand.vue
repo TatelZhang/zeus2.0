@@ -17,7 +17,6 @@
         <Button size="large" class="margin-right-10" type="primary" @click="demandUpload">需求上传</Button>
         <Button size="large" class="margin-right-10" type="primary">导出需求</Button>
         <Button size="large" class="margin-right-10" type="primary">导出需求详情</Button>
-        <Button @click="modalStatus.upDemand = true">弹框</Button>
       </div>
       <Tabs v-model="currTableHeaderFlag">
         <TabPane label="未报价需求" name="noPriceDemand"></TabPane>
@@ -28,78 +27,6 @@
       </Tabs> 
       <ZTable :column="currHeaders" :config="table.config" ref="table" :query="searchParams"></ZTable>
     </div>
-    <!-- 需求上传Modal -->
-    <Modal v-model="modalStatus.upDemand" width="40%" :mask-closable="false" class="demand-upload">
-      <h2 slot="header" style="color: #f60;text-align:center">
-        <span>需求上传</span>
-      </h2>
-      <div class="upload-content">
-        <div style="margin-bottom: 10px;">
-          <div style="font-size: 14px;">规格信息录入：</div>
-          <div class="ivu-alert ivu-alert-info">
-            <div class="upload-item" style="width: 26%;">
-              <Input placeholder="例:50*50*3.0*6">
-                <span slot="prepend">规格：</span> 
-              </Input>
-            </div>
-            <div class="upload-item" style="max-width: 16%">
-              <Input>
-                <span slot="prepend">类型：</span>
-              </Input>
-            </div>
-            <div class="upload-item" style="max-width: 17%">
-              <Input>
-                <span slot="prepend">数量</span>
-                <span slot="append">支</span>
-              </Input>
-            </div>
-            <div class="upload-item" style="max-width: 18%">
-              <Input>
-                <span slot="prepend">重量</span>
-                <span slot="append">吨</span>
-              </Input>
-            </div>
-            <div class="upload-item">
-              <Button type="warning">添加规格</Button>
-            </div>
-          </div>
-          <Table :columns="uploadDemand.header" :data="uploadDemand.data" stripe border></Table>
-        </div>
-          <div style="font-size: 14px;">客户信息录入：</div>
-          <div class="ivu-alert ivu-alert-info">
-            <div style="display: inline-block; width: 50%;">
-                <Input size="large" class="customer-label"><span slot="prepend">目的地</span></Input>
-                <Input size="large" class="customer-label"><span slot="prepend">客户</span></Input>
-                <Input size="large" class="customer-label"><span slot="prepend">电话</span></Input>
-            </div>
-            <div  style="display: inline-block;width:40%;vertical-align: top; float: right;">
-              <Collapse>
-                <Panel>
-                  <span>选择已有客户</span> 
-                  <div slot="content">
-                    <div>
-                      <Input placeholder="输入客户名称" style="display:inline-block;width: 70%;"></Input>
-                      <Button type="info">搜索</Button>
-                    </div>
-                    <div class="customer-list">
-                      <span>上海</span>
-                      <span>嘉勋</span>
-                      <span>15123120321</span>
-                    </div>
-                    <div class="customer-list">
-                      <span>上海</span>
-                      <span>嘉勋</span>
-                      <span>15123120321</span>
-                    </div>
-                    <Page :total="5" size="small"></Page>
-                  </div>
-                </Panel>
-              </Collapse>
-            </div>
-          </div>
-          <Input type="textarea" :rows="4" placeholder="填写备注"></Input>
-      </div>
-    </Modal>
     <!-- 需求详细Modal -->
     <Modal v-model="modalStatus.demandDetail"  width="50%" class="demand-detail">
       <h2 slot="header" style="color: #f60;text-align:center">
@@ -142,7 +69,6 @@
           state: 0
         },
         modalStatus: {
-          upDemand: false,
           demandDetail: false
         },
         table: {
@@ -221,24 +147,52 @@
           operate: {
             title: '操作类型',
             align: 'center',
-            width: 150,
+            width: 200,
             render: (h, p) => {
+              let {row} = p
               return h('div', [
-                h('Button', '修改'), 
-                h('Button', '删除')
+                h('Button', {
+                  style: {marginRight: '10px'},
+                  props: {type: "info"},
+                  on: {
+                    click: () => {
+                      this.demandChange(row)
+                    }
+                  }},'修改'), 
+                h('Button', {
+                  props: {type: 'error'},
+                  on: {
+                    click: () => {
+                      this.$Modal.confirm({title: '确认', content: '确认删除？', onOk: () => { this.delDemand(row.demandNo)}})
+                    }
+                  }
+                }, '删除')
                 ]
               )
             }
           },
-          repeat: {
+          repeating: {
             title: '交易反馈',
-            width: 100,
+            // width: 100,
+            align: 'center',
             render: (h, p) => {
-              return h("Button",{
+              return h('div', {style: {textAlign: 'center'}}, [h('Button', {
                 props: {
                   type: 'warning'
                 }
-              }, '销售报价')
+              }, '销售报价')])
+            }
+          },
+          repeated: {
+            title: '交易反馈',
+            // width: 100,
+            align: 'center',
+            render: (h, p) => {
+              return h('div', {style: {textAlign: 'center'}}, [h('Button', {
+                props: {
+                  type: 'warning'
+                }
+              }, '填写反馈')])
             }
           },
           config: {
@@ -271,16 +225,6 @@
           demandWeight: '',
           comment: '',  // 销售备注
           priceComment: '', // 采购备注
-        },
-        uploadDemand: { // 需求上传data
-          header: [
-            {title: '规格', key: ''},
-            {title: '类型', key: ''},
-            {title: '数量', key: ''},
-            {title: '重量', key: ''},
-            {title: '操作', }
-          ],
-          data: []
         }
       }
     },
@@ -289,7 +233,7 @@
       currTableHeaderFlag (val){
         this.searchParams.state = this.demandStatus[val].key
         this.changeCurrHeaders()
-        this.searchDemand()
+        this.$refs.table.load({page: 1})
       }
     },
     methods: {
@@ -323,8 +267,10 @@
         this.currHeaders = [...this.table.baseHeaders]
         if(this.searchParams.state ===0){
           this.currHeaders.push(this.table.operate)
-        }else if(this.searchParams.state === 1 || this.searchParams.state === 2){
-          this.currHeaders.push(this.table.repeat)
+        }else if(this.searchParams.state === 1){
+          this.currHeaders.push(this.table.repeating)
+        }else if(this.searchParams.state === 2){
+          this.currHeaders.push(this.table.repeated)
         }
       },
       // 显示需求明细
@@ -344,8 +290,24 @@
           }
         })
       },
+      // 转入需求上传页面
       demandUpload () {
         this.$router.push({path: '/demandup'})
+      },
+      // 转入需求更改页面
+      demandChange (row) {
+        let {comment, demandNo, destination, customerName, customerPhone} = row
+        this.$router.push({name: 'demandch', params: {comment, demandNo, destination, customerName, customerPhone, status: true}})
+      },
+      // 删除需求
+      delDemand (demandNo) {
+        axios.post('/zues/api/demand/remove', {demandNo}).then(res=>{
+          let {status, data} = res
+          if(status === 200 && data.code === 200){
+            this.$Message.info(data.msg)
+            this.searchDemand()
+          }
+        })
       }
     },
     mounted () {

@@ -63,6 +63,11 @@ export default new Router({
           component: (resolve) => require(['@/pages/demand/Demandup'], resolve),
           meta: {title: '需求上传', page: '需求管理'}
         },{
+          path: '/demandch',
+          name: 'demandch',
+          component: (resolve) => require(['@/pages/demand/Demandch'], resolve),
+          meta: {title: '需求更改', page: '需求管理'}
+        },{
           path: '/verify',
           name: 'verify',
           component: (resolve) => require(['@/pages/manager/Verify'], resolve),

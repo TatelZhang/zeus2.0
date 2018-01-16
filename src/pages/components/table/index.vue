@@ -36,25 +36,28 @@
             query: Object,
         },
         created() {
-            this.load({pageSize: this.page.pageSize});
+            this.load({pageSize: this.page.pageSize, page: 1});
         },
         methods: {
             load(param={}) {
                 this.loading = true;
-                var params = Object.assign(param,this.query);
+                var params = Object.assign({}, param, this.query);
                 axios.get(this.config.url,{params})
                     .then(({data}) => {
                         this.data = data.data.row;
-                        // this.page.total = Math.ceil(data.data.totalCount / this.page.pageSize);
                         this.page.total = data.data.totalCount;
+                        this.page.current = Number(data.data.page)
+                        if(this.data.length === 0 && this.page.current > 1){ // 如果当前页非首页且数据为空, 重新加载
+                            this.load({page: this.page.current - 1})
+                        }
                         this.loading = false;
                     })
             },
             handle(page){
-                this.load({page: page,pageSize: this.page.pageSize});
+                this.load({page: page, pageSize: this.page.pageSize});
             },
             search(){
-                this.load();
+                this.load({page: this.page.current});
             }
         }
     }

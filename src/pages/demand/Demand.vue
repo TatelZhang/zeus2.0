@@ -15,8 +15,8 @@
       <span style="font-size: 20px;">需求列表：</span>
       <div class="ivu-alert ivu-alert-success">
         <Button size="large" class="margin-right-10" type="primary" @click="demandUpload">需求上传</Button>
-        <Button size="large" class="margin-right-10" type="primary">导出需求</Button>
-        <Button size="large" class="margin-right-10" type="primary">导出需求详情</Button>
+        <Button size="large" class="margin-right-10" type="primary" @click="exportDemandList">导出需求列表</Button>
+        <Button size="large" class="margin-right-10" type="primary" @click="exportDemandDetailList">导出需求详情</Button>
       </div>
       <Tabs v-model="currTableHeaderFlag">
         <TabPane label="未报价需求" name="noPriceDemand"></TabPane>
@@ -28,12 +28,14 @@
       <ZTable :column="currHeaders" :config="table.config" ref="table" :query="searchParams"></ZTable>
     </div>
     <!-- 需求详细Modal -->
-    <Modal v-model="modalStatus.demandDetail"  width="50%" class="demand-detail">
+    <Modal v-model="modalStatus.demandDetail"  width="50%" class="demand-detail" :mask-closable="false">
       <h2 slot="header" style="color: #f60;text-align:center">
         <span>需求明细</span>
       </h2>
       <div>
+        <div><span style="font-size: 14px; font-weight: bold;">订单号：</span>{{demandDetail.demandNo}}</div>
         <div class="ivu-alert ivu-alert-info">
+          
           <div class="info-item">
             <span class="label">目的地：</span> 
             <span>{{demandDetail.destination}}</span>
@@ -53,6 +55,41 @@
         </div>
         <Table :columns="demandDetail.detailHeader" :data="demandDetail.detail" :loading="demandDetail.loading" stripe border></Table>
       </div>
+      <div slot="footer">
+        <Button type="warning" size="large" @click="exportDemand">导出需求</Button>
+      </div>
+    </Modal>
+    <!-- 销售报价Modal -->
+    <Modal v-model="modalStatus.priceDetail"  width="50%" class="demand-detail" :mask-closable="false">
+      <h2 slot="header" style="color: #f60;text-align:center">
+        <span>销售报价</span>
+      </h2>
+      <div>
+        <div><span style="font-size: 14px; font-weight: bold;">订单号：</span>{{salePrice.customerDetail.demandNo}}</div>
+        <div class="ivu-alert ivu-alert-info">
+          
+          <div class="info-item">
+            <span class="label">目的地：</span> 
+            <span>{{salePrice.customerDetail.destination}}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">总重量：</span>
+            <span>{{salePrice.customerDetail.demandWeight}} 吨</span>
+          </div>
+          <div class="info-item">
+            <span class="label">销售备注：</span>
+            <span style="color: #ff0000">{{salePrice.customerDetail.comment}}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">采购备注：</span>
+            <span style="color: #ff0000">{{salePrice.customerDetail.priceComment}}</span>
+          </div>
+        </div>
+        <Table :columns="salePrice.header" :data="salePrice.demandList" :loading="salePrice.loading" stripe border></Table>
+      </div>
+      <div slot="footer">
+        <Button type="warning" size="large" @click="confirmSubmit">提交</Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -69,7 +106,8 @@
           state: 0
         },
         modalStatus: {
-          demandDetail: false
+          demandDetail: false,
+          priceDetail: false
         },
         table: {
           baseHeaders: [
@@ -172,13 +210,19 @@
             }
           },
           repeating: {
-            title: '交易反馈',
+            title: '销售报价',
             // width: 100,
             align: 'center',
             render: (h, p) => {
+              let {row} = p
               return h('div', {style: {textAlign: 'center'}}, [h('Button', {
                 props: {
                   type: 'warning'
+                },
+                on: {
+                  click: () => {
+                    this.showPriceDeatil(row)
+                  }
                 }
               }, '销售报价')])
             }
@@ -199,7 +243,7 @@
             url: '/zues/api/demand/list'
           }
         },
-        currTableHeaderFlag: 'noPriceDemand',
+        currTableHeaderFlag: 'noPriceDemand', // 切换当前表头
         currHeaders: [],
         demandStatus: {
           noPriceDemand: {key: 0, value: '未报价需求'},
@@ -208,6 +252,7 @@
           canceledDemand: {key: 3, value: '未成交'},
           dealedDemand: {key: 4, value: '已成交'}
         },
+        // 用于显示需求详细
         demandDetail: {
           detailHeader: [
             {title: '规格', key: 'spec'},
@@ -225,6 +270,71 @@
           demandWeight: '',
           comment: '',  // 销售备注
           priceComment: '', // 采购备注
+          demandNo: ''
+        },
+        salePrice: {
+          header: [
+            {title: '规格', key: 'spec'},
+            {title: '类型', key: 'type'},
+            {title: '数量(支)', key: 'demandAmount'},
+            {title: '重量(吨)', key: 'demandWeight'},
+            {title: '业务报价', 
+            width: '150',
+            render: (h, p) => {
+              let {row: {_index, feedbackPrice}} = p
+              this.salePrice.demandList[_index].feedbackPrice1 = feedbackPrice
+              return h('InputNumber', {
+                style: {width: '100%'},
+                props: {
+                  value: feedbackPrice
+                },
+                on: {
+                  'on-change':  (val)=> {
+                    this.salePrice.demandList[_index].feedbackPrice1 = Number(val)
+                  },
+                  'on-blur': () => {
+                    this.salePrice.demandList[_index].feedbackPrice = this.salePrice.demandList[_index].feedbackPrice1
+                  }
+                }
+              })
+            }
+            },
+            {title: '成本报价',
+            render: (h, p) => {
+              let {row: {freight, factoryPrice}} = p
+              return freight + factoryPrice
+            }},
+            {title: '备注', key: 'comment', width: '20%',
+            render: (h, p) => {
+              let {row: {comment, _index}} = p
+              this.salePrice.demandList[_index].comment1 = comment
+              return h('Input', {
+                props: {
+                  rows: 2,
+                  type: 'textarea',
+                  value: comment
+                },
+                on: {
+                  'input': (val) => {
+                    this.salePrice.demandList[_index].comment1 = val
+                    console.log(val)
+                  },
+                  'on-blur': () => {
+                    this.salePrice.demandList[_index].comment = this.salePrice.demandList[_index].comment1
+                  }
+                }
+              })
+            }},
+          ],
+          loading: true,
+          demandList: [],
+          customerDetail: {
+            demandNo: '',
+            destination: '',
+            demandWeight: '',
+            comment: '', // 销售备注
+            priceComment: '' // 采购备注
+          }
         }
       }
     },
@@ -280,6 +390,7 @@
         this.demandDetail.demandWeight = demandWeight
         this.demandDetail.comment = comment
         this.demandDetail.priceComment = priceComment
+        this.demandDetail.demandNo = demandNo
         this.demandDetail.loading = true
         this.modalStatus.demandDetail = true
         axios.get('/zues/api/demand/detail', {params: {demandNo}}).then(res=>{
@@ -306,6 +417,58 @@
           if(status === 200 && data.code === 200){
             this.$Message.info(data.msg)
             this.searchDemand()
+          }
+        })
+      },
+      // 导出需求列表
+      exportDemandList () {
+        window.open(`/zues/api/export/demandlist/需求列表.xls`)
+      },
+      // 导出需求
+      exportDemand () {
+        let target = this.demandDetail.demandNo
+        window.open(`/zues/api/export/demandexport/${target}需求详情.xls?demandNo=${target}`)
+        // this.modalStatus.demandDetail = false
+      },
+      // 导出需求详情 根据销售人员，创建时间，客户名称
+      exportDemandDetailList () {
+        let date = new Date().formatDate('yyyyMMdd');
+        window.open(`/zues/api/export/demanddetaillist/需求列表详情${date}.xls?demandUser=${this.searchParams.demandUser}&createTime=${this.searchParams.createTime}&customName=${this.searchParams.customName}`)
+      },
+      // 销售报价Modal
+      showPriceDeatil (row) {
+        // console.log(row)
+        this.modalStatus.priceDetail = true
+        for(let key in this.salePrice.customerDetail){
+          this.salePrice.customerDetail[key] = row[key]
+        }
+        this.getPriceList(row.demandNo)
+        this.salePrice.loading = false
+      },
+      // 获取销售报价list
+      getPriceList (demandNo) {
+        axios.get('/zues/api/demand/detail', {params: {demandNo}}).then(({status, data}) => {
+          if(status === 200 && data.code === 200){
+            this.salePrice.demandList = data.data
+          }
+        })
+      },
+      // editPriceList (index, key, val){
+      //   this.salePrice.demandList[index][key] = val
+      // },
+      // 提交销售报价
+      confirmSubmit () {
+        this.$Modal.confirm({title: '确认', content: '确认提交？', onOk: () => {this.submitPrice()}})
+      },
+      submitPrice () {
+        let params = {demandNo: this.salePrice.customerDetail.demandNo, demandPrices: this.salePrice.demandList, imp: 2}
+        axios.post('/zues/api/demand/price', params).then(({status, data}) => {
+          if(status === 200 && data.code === 200){
+            this.$Message.success(data.msg)
+            this.modalStatus.priceDetail = false
+            this.searchDemand()
+          }else{
+            this.$Message.error({content: data.msg, duration: 5})
           }
         })
       }

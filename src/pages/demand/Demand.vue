@@ -67,7 +67,6 @@
       <div>
         <div><span style="font-size: 14px; font-weight: bold;">订单号：</span>{{salePrice.customerDetail.demandNo}}</div>
         <div class="ivu-alert ivu-alert-info">
-          
           <div class="info-item">
             <span class="label">目的地：</span> 
             <span>{{salePrice.customerDetail.destination}}</span>
@@ -91,6 +90,27 @@
         <Button type="warning" size="large" @click="confirmSubmit">提交</Button>
       </div>
     </Modal>
+    <!-- 填写反馈 -->
+    <Modal v-model="modalStatus.repeat">
+      <h2 slot="header" style="color: #f60;text-align:center">
+        <span>成交结果反馈</span>
+      </h2>
+      <div>
+        <div style="margin-bottom: 10px;">
+          <span style="font-size: 13px; font-weight:bold;">成交结果：</span>
+          <Select v-model="FeedbackParams.state">
+            <Option v-for="item in dealStatusArray" :key="item.value" :value="item.value">{{item.key}}</Option>
+          </Select>
+        </div>
+        <div>
+          <span style="font-size: 13px; font-weight:bold;">交易反馈：</span>
+          <Input type="textarea" placeholder="请填写反馈" v-model="FeedbackParams.dealReason"></Input>
+        </div>
+      </div>
+      <div slot="footer">
+        <Button type="warning" size="large" @click="confirmDealSubmit">提交</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -107,7 +127,8 @@
         },
         modalStatus: {
           demandDetail: false,
-          priceDetail: false
+          priceDetail: false,
+          repeat: false
         },
         table: {
           baseHeaders: [
@@ -224,7 +245,7 @@
                     this.showPriceDeatil(row)
                   }
                 }
-              }, '销售报价')])
+              }, '报价')])
             }
           },
           repeated: {
@@ -232,11 +253,17 @@
             // width: 100,
             align: 'center',
             render: (h, p) => {
+              let {row: {demandNo}} = p
               return h('div', {style: {textAlign: 'center'}}, [h('Button', {
                 props: {
                   type: 'warning'
+                },
+                on: {
+                  click: () => {
+                    this.openRepeatModal(demandNo)
+                  }
                 }
-              }, '填写反馈')])
+              }, '反馈')])
             }
           },
           config: {
@@ -335,7 +362,13 @@
             comment: '', // 销售备注
             priceComment: '' // 采购备注
           }
-        }
+        },
+        FeedbackParams: {
+          demandNo: '',
+          state: '',
+          dealReason: ''
+        },
+        dealStatusArray: [{ value: 4, key: '交易成功' }, { value: 3, key: '交易失败' }],
       }
     },
     watch: {
@@ -469,6 +502,30 @@
             this.searchDemand()
           }else{
             this.$Message.error({content: data.msg, duration: 5})
+          }
+        })
+      },
+      openRepeatModal (demandNo) {
+        this.FeedbackParams.state = ''
+        this.FeedbackParams.dealReason = ''
+        this.modalStatus.repeat = true
+        this.FeedbackParams.demandNo = demandNo
+      },
+      confirmDealSubmit () {
+        if(this.FeedbackParams.state&&this.FeedbackParams.dealReason){
+          this.$Modal.confirm({title: '确认', content: '确认提交？', onOk: () => {this.submitDealResult()}})
+        }else{
+          this.$Message.error({content: '请完善反馈信息', duration: 5})
+        }
+      },
+      submitDealResult () {
+        axios.post('/zues/api/demand/update', this.FeedbackParams).then(({status, data})=>{
+          if(status===200 && data.code === 200){
+            this.$Message.success("反馈成功")
+            this.modalStatus.repeat = false
+            this.searchDemand()
+          }else{
+            this.$Message.error(data.msg)
           }
         })
       }

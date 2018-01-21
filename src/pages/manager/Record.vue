@@ -25,7 +25,7 @@
             {title: '序号', key: 'recordId',width: 200},
             {title: '时间', key: 'createTime',sortable: true , render: (h, p)=>{
               let {row: {createTime}} = p
-              return new Date(createTime).toLocaleString()
+              return new Date(createTime).formatDate('yyyy-MM-dd hh:mm')
             }},
             {title: '用户ID', key: 'userId'},
             {title: '修改记录', key: 'type'},

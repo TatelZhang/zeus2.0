@@ -103,7 +103,7 @@
               let {row:{valueTime}} = p
               valueTime = Number(valueTime)
               if(valueTime){
-                return new Date(valueTime).toLocaleString()
+                return new Date(valueTime).formatDate('yyyy-MM-dd hh:mm')
               }else{
                 return ''
               }
@@ -114,7 +114,7 @@
               let {row:{valueTime}} = p
               valueTime = Number(valueTime)
               if(valueTime){
-                return new Date(valueTime).toLocaleString()
+                return new Date(valueTime).formatDate('yyyy-MM-dd hh:mm')
               }else{
                 return ''
               }
@@ -174,7 +174,7 @@
                 let {row:{lastUpdateTime}} = p
                 let time = Number(lastUpdateTime)
                 if(!time) return 
-                return new Date(time).toLocaleString()
+                return new Date(time).formatDate('yyyy-MM-dd hh:mm')
               }
             },{
               title: '操作',

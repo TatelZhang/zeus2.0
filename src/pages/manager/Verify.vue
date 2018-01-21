@@ -32,7 +32,7 @@
             {title: '下单时间', key: 'createTime',
             render: (h, p)=>{
               let {row:{createTime}} = p
-              return new Date(createTime).toLocaleString()
+              return new Date(createTime).formatDate('yyyy-MM-dd hh:mm')
             }},
             {title: '总吨位', key: 'orderWeight'},
             {title: '总价', key: 'orderPrice'},

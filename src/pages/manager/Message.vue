@@ -64,7 +64,7 @@
               render: (h, p) => {
                 let {row: {createTime}} = p
                 // console.log(typeof createTime)
-                return new Date(Number(createTime)).toLocaleString()
+                return new Date(Number(createTime)).formatDate('yyyy-MM-dd hh:mm')
               }
             },{
               title: '操作',

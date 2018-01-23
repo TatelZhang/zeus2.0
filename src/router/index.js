@@ -4,7 +4,6 @@ import Login from '@/pages/Login'
 import Index from '@/pages/Index'
 import Product from '@/pages/order/Product'
 import Cart from '@/pages/order/Cart'
-// import Price from '@/pages/data/Price'
 import Supplier from '@/pages/data/Supplier'
 Vue.use(Router)
 
@@ -37,6 +36,11 @@ export default new Router({
           component: (resolve) => require(['@/pages/order/Order'], resolve),
           meta: {title: '订单列表', page: '宙斯报价'}
         },{
+          path: '/print',
+          name: 'print',
+          component: (resolve) => require(['@/pages/order/PagePrint'], resolve),
+          meta: {title: '打印设置', page: '宙斯报价'}
+        },{
           path: '/price',
           name: 'price',
           component: (resolve) => require(['@/pages/data/Price'], resolve),
@@ -44,7 +48,6 @@ export default new Router({
         },{
           path: '/supplier',
           name: 'supplier',
-          // component: (resolve) => require(['@/pages/data/Supplier'], resolve)
           component: Supplier,
           meta: {title: '供应商', page: '供应商录入'}
         },{

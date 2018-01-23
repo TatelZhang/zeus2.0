@@ -4,7 +4,7 @@
         <span class="margin-right-10">订单号：</span>
         <Input style="display: inline-block; width: 211px;" v-model="searchParam.orderNo" placeholder="支持模糊查询" size="large"></Input>
         <Button class="margin-10" type="primary" icon="ios-search" size="large" @click="searchOrder">查询</Button>
-        <Button type="primary" icon="ios-download-outline" size="large" disabled>导出Excel</Button>
+        <Button type="primary" icon="ios-download-outline" size="large" @click="exportOrder">导出Excel</Button>
     </div>
     <br>
     <ZTable :column="table.column" :config="table.config" :query="searchParam" ref="order"></ZTable>
@@ -14,7 +14,7 @@
       </h2> 
       <Table :columns="detailHeaders" :data="orderDetailTable.data" stripe border></Table>
       <div slot="footer">
-        <Button type="warning" size="large" @click="exportOrderDetail" disabled>导出Excel</Button>
+        <Button type="warning" size="large" @click="exportOrderDetail">导出Excel</Button>
       </div>
     </Modal>
     <Modal v-model="modalStatus.changeSingle" width="20%" ref="test">
@@ -55,6 +55,7 @@
   </div>
 </template>
 <script>
+  import 'printthis'
   export default {
     data () {
       return {
@@ -120,7 +121,7 @@
                     },
                     on: {
                       click: () =>{
-                      
+                        this.showPrint()
                       }
                     }
                   }, '打印'),
@@ -274,6 +275,10 @@
             this.modalStatus.changeSingle = false
           }
         })
+      },
+      // 跳转到打印页面
+      showPrint (orderNo) {
+        this.$router.push({name: 'print', query: {orderNo: 1123312}})
       }
     }
   }

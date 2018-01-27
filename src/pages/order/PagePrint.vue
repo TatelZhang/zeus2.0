@@ -12,9 +12,13 @@
         <span class="margin-10">传真号码：{{senderAddress.fax}}</span>
         <span class="margin-10">电子邮箱：{{senderAddress.email}}</span>
         <span class="margin-10">财务电话：{{senderAddress.finance}}</span>
-       
       </div>
       <div :class="['addr-container', senderClass]">
+        <div class="ivu-row" style="margin-bottom:10px;">
+          <span class="margin-right-10">搜索地址：</span>
+          <Input style="display: inline-block; width: 211px;" placeholder="输入地址" size="large" v-model="senderSearchAddress"></Input>
+          <Button class="margin-10" icon="ios-search" size="large" @click="searchAddress(1)">搜索</Button>
+        </div>
         <div class="addr-item" v-for="item in sender.row" :key="item.addressId">
           <Card >
             <div slot="title" style="font-weight:bold">
@@ -23,11 +27,11 @@
               <span>{{item.addressName}}</span>
             </div>
             <div slot="extra">
-              <Tag color="yellow" v-if="item.isDefault" style="margin-right: 10px;">默认地址</Tag>
-              <Tag color="yellow" type="border" v-else style="margin-right: 10px;">设置默认</Tag>
-              <a href="javascript:void(0)"><i class="fa fa-trash-o fa-lg"></i></a>
+              <Tag color="yellow" v-if="item.isDefault" style="margin-right: 10px;" @click="console.log(1)">默认地址</Tag>
+              <Tag color="yellow" type="border" v-else style="margin-right: 10px;"> <span @click="setDefaultAddress(item)">设置默认</span></Tag>
+              <a href="javascript:void(0)" @click="removeAddress(item)"><i class="fa fa-trash-o fa-lg"></i></a>
             </div>
-            <div class="addr-item-content" @click="changeSender(1, item)">
+            <div class="addr-item-content" @click="changeAddress(1, item)">
               <div class="content-item">
                 <span class="label">地址：</span> 
                 <span class="info">{{item.addressName}}</span>
@@ -59,7 +63,7 @@
             </div>
           </Card>
         </div>
-        <Page size="small" style="text-align: right;margin-top: 10px;" :total="sender.totalCount" :current="sender.page" :page-size="sender.pageSize"></Page>
+        <Page size="small" style="margin-top: 10px;" :total="sender.totalCount" :current="sender.page" :page-size="sender.pageSize" @on-change="changeSenderPage"></Page>
       </div> 
       <div style="font-size: 14px; font-weight: bold;">收件地址：</div>
       <div class="ivu-alert ivu-alert-info">
@@ -70,9 +74,13 @@
         <span class="margin-10">传真号码：{{receiverAddress.fax}}</span>
         <span class="margin-10">电子邮箱：{{receiverAddress.email}}</span>
         <span class="margin-10">财务电话：{{receiverAddress.finance}}</span>
-        
       </div>
       <div :class="['addr-container', receiverClass]">
+        <div class="ivu-row" style="margin-bottom:10px;">
+          <span class="margin-right-10">搜索地址：</span>
+          <Input style="display: inline-block; width: 211px;" placeholder="输入地址" size="large" v-model="receiverSearchAddress"></Input>
+          <Button class="margin-10" icon="ios-search" size="large" @click="searchAddress(2)">搜索</Button>
+        </div>
         <div class="addr-item" v-for="item in receiver.row" :key="item.addressId">
           <Card >
             <div slot="title" style="font-weight:bold">
@@ -82,10 +90,10 @@
             </div>
             <div slot="extra">
               <Tag color="yellow" v-if="item.isDefault" style="margin-right: 10px;">默认地址</Tag>
-              <Tag color="yellow" type="border" v-else style="margin-right: 10px;">设置默认</Tag>
-              <a href="javascript:void(0)"><i class="fa fa-trash-o fa-lg"></i></a>
+              <Tag color="yellow" type="border" v-else style="margin-right: 10px;"><span @click="setDefaultAddress(item)">设置默认</span></Tag>
+              <a href="javascript:void(0)" @click="removeAddress(item)"><i class="fa fa-trash-o fa-lg"></i></a>
             </div>
-            <div class="addr-item-content" @click="changeSender(2, item)">
+            <div class="addr-item-content" @click="changeAddress(2, item)">
               <div class="content-item">
                 <span class="label">地址：</span> 
                 <span class="info">{{item.addressName}}</span>
@@ -117,7 +125,7 @@
             </div>
           </Card>
         </div>
-        <Page size="small" style="text-align: right;margin-top: 10px;" :total="receiver.totalCount" :current="receiver.page" :page-size="receiver.pageSize"></Page>
+        <Page size="small" style="margin-top: 10px;" :total="receiver.totalCount" :current="receiver.page" :page-size="receiver.pageSize"></Page>
       </div> 
       <div style="font-size: 14px; font-weight: bold;">备注：</div>
       <div class="ivu-alert ivu-alert-info">
@@ -166,13 +174,15 @@ export default {
         page: 1,
         pageSize: 5,
         totalCount: 1,
-        row: []
+        row: [],
       },
+      senderSearchAddress: '', // 用于搜索地址数据绑定
+      receiverSearchAddress: '', // 用于搜索地址数据绑定
       receiver: {
         page: 1,
         pageSize: 5,
         totalCount: 1,
-        row: []
+        row: [],
       }
     }
   },
@@ -189,22 +199,41 @@ export default {
         }
       })
     },
+    // 获取地址列表
     getAddressList(type=1){
       let params = {addressType: type}
       let target = {}
       if(type === 1){
         target = this.sender
+        params.address = this.senderSearchAddress
       }else{
         target = this.receiver
+        params.address = this.receiverSearchAddress
       }
       params.page = target.page
-      params.address = ''
+      
       axios.get('/zues/api/address/list', {params}).then(({status, data})=>{
-        for(let key in this.sender){
-          target[key] = data.data[key]
-          target.page = Number(data.data.page)
+        if(status === 200 && data.code === 200){
+          if(data.data.count === 0 && target.page > 1){
+            target.page -= 1
+            this.getAddressList(type);
+            return 
+          }
+          for(let key in this.sender){
+            target[key] = data.data[key]
+            target.page = Number(data.data.page) || 1;
+          }
         }
       })
+    },
+    searchAddress(type) {
+      if(type === 1){
+        this.sender.page = 1
+        this.getAddressList(1)
+      }else{
+        this.receiver.page = 1
+        this.getAddressList(2)
+      }
     },
     showSenders(){
       this.show.sender = !this.show.sender
@@ -212,7 +241,8 @@ export default {
     showReceivers () {
       this.show.receiver = !this.show.receiver
     },
-    changeSender (type, item) {
+    // 地址列表选择填充
+    changeAddress (type, item) {
       if(type === 1){
         this.senderAddress = item
         this.show.sender = false;
@@ -220,8 +250,31 @@ export default {
         this.receiverAddress = item
         this.show.receiver = false;
       }
-      
     },
+    // 翻页
+    changeSenderPage (page) {
+      this.sender.page = page
+      this.getAddressList(1)
+    },
+    changeReceiverPage (page){
+      this.receiver.page = page
+      this.getAddressList(2)
+    },
+    // 设置默认地址
+    setDefaultAddress(item) {
+      axios.post('/zues/api/address/setdefault', {addressType: item.addressType, addressId: item.addressId}).then(({status, data}) => {
+        // if(status === 200 && data.code === 200) {}
+        this.$Message.success("设置默认地址成功")
+        this.getAddressList(item.addressType)
+      })
+    },
+    // 删除地址
+    removeAddress (item) {
+      axios.post('/zues/api/address/remove', {addressId: item.addressId + ''}).then(res => {
+        this.$Message.success('删除地址成功')
+        this.getAddressList(item.addressType)
+      })
+    }
   },
   computed: {
     senderClass () {
@@ -248,11 +301,11 @@ export default {
 </script>
 <style>
   .addr-container {
-    /* border: solid #ccc 1px; */
-    /* padding: 5px; */
-    height: 0;
+    opacity: 0;
+    padding: 5px;
+    max-height: 0;
     overflow: hidden;
-    transition: height .5s;
+    transition: all .5s ease-in-out;
   }
   .addr-item {
     display: inline-block;
@@ -279,6 +332,9 @@ export default {
     color: #666;
   }
   .show {
-    height: 260px;
+    max-height: 330px;
+    /* max-height: 100%; */
+    border: 1px solid #eee;
+    opacity: 1;
   }
 </style>

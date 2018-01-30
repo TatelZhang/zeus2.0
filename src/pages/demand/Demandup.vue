@@ -71,7 +71,7 @@
       </div>
     </div>
     <div class="">
-      <Button size="large" type="warning" @click="backTo">返回需求管理</Button>
+      <Button size="large" type="warning" @click="backTo">返回</Button>
       <Button size="large" type="success" @click="checkData">提交需求</Button>
     </div>
     <Modal v-model="modalStatus.uploadDemand"  width="50%" class="demand-detail" @on-ok="addDemand">

@@ -121,7 +121,7 @@
                     },
                     on: {
                       click: () =>{
-                        this.showPrint()
+                        this.showPrint(orderNo)
                       }
                     }
                   }, '打印'),
@@ -278,7 +278,7 @@
       },
       // 跳转到打印页面
       showPrint (orderNo) {
-        this.$router.push({name: 'print', query: {orderNo: 1123312}})
+        this.$router.push({name: 'printconf', query: {orderNo}})
       }
     }
   }

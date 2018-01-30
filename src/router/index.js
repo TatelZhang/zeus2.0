@@ -36,9 +36,9 @@ export default new Router({
           component: (resolve) => require(['@/pages/order/Order'], resolve),
           meta: {title: '订单列表', page: '宙斯报价'}
         },{
-          path: '/print',
-          name: 'print',
-          component: (resolve) => require(['@/pages/order/PagePrint'], resolve),
+          path: '/printconf',
+          name: 'printconf',
+          component: (resolve) => require(['@/pages/order/PrintConf'], resolve),
           meta: {title: '打印设置', page: '宙斯报价'}
         },{
           path: '/price',

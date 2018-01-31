@@ -597,7 +597,7 @@ export default {
       this.printOptions.pageTitle = `订单号：${orderNo}`
       let params = {orderNo}
       axios.post('/zues/api/order/print', params).then(({data}) => {
-        this.orderDetail = data.data.orderDetail;
+        this.orderDetail = data.data.orderDetail.slice();
         $(this.$refs.printpage).printThis(this.printOptions)
       })
      

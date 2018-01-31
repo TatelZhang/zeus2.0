@@ -10,12 +10,13 @@
       <span class="margin-10">供应商名称：</span>
       <ZSelect v-model="inventory.address" size="large" placeholder="供应商所在地" data="/zues/api/supplier/address" keyValue="address-address" style="display:inline-block; width:211px;"></ZSelect>
       <Button size="large" icon="ios-search" type="primary" @click="searchInventory" class="margin-10">查询</Button>
-      <Upload action="/zues/api/upload/excel?type=inventory" style="float:right"> 
+    </div>
+    <div class="ivu-row" style="margin:10px 0;">
+      <Upload action="/zues/api/upload/excel?type=inventory"> 
         <Button type="info" icon="ios-cloud-upload-outline" size="large">上传库存表</Button>
         <span style="cursor:pointer;margin-left: 5px;">(供应商名称_类型_日期[库存表])</span>
       </Upload>
     </div>
-    <br>
     <ZTable :column="table.column" :config="table.config" :query="inventory" ref="inventory"></ZTable>
     <Modal v-model="inventoryModal" @on-ok="changeInventory">
       <h2 slot="header" style="color:#f90;text-align:center">

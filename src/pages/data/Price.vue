@@ -2,7 +2,7 @@
   <div class="price">
     <div class="zeus-search">
       <div class="ivu-row">
-        <Form :model="searchFrom" style="display: inline-block;max-width: 80%">
+        <Form :model="searchFrom" style="display: inline-block;">
             <span class="margin-right-10">规格：</span>
             <Input style="display:inline-block; width:211px;" v-model="searchFrom.spec" placeholder="规格：支持模糊查询" size="large"></Input>
             <span class="margin-10">类型：</span>
@@ -13,26 +13,26 @@
             <ZSelect style="display:inline-block; width:211px;" v-model="searchFrom.address" size="large" placeholder="供应商所在地" data="/zues/api/supplier/address" keyValue="address-address"></ZSelect>
             <Button class="margin-10" size="large" icon="ios-search" type="primary" @click="search">查询</Button>
         </Form>
-        <Upload action="/zues/api/upload/excel" style="float:right">
-          <Button type="info" icon="ios-cloud-upload-outline" size="large">上传价格表</Button>
-          <span style="cursor:pointer;margin-left: 5px;">(命名格式：价格表_类型_日期)</span>
-        </Upload>
       </div>
-      <Row>
+      <Row style="margin-top: 10px;">
         <Col span="2">
           <input type="number" v-model="todayPriceParams.adjust" class="ivu-input ivu-input-large" style="border-top-right-radius:0;border-bottom-right-radius:0;border-right:0;">
         </Col>
-        <Col span="8" align="left">
+        <Col span="3" align="left">
           <ButtonGroup size="large">
             <Button icon="minus" @click="changeAdjustPrice(-10)" style="border-top-left-radius: 0;border-bottom-left-radius:0"></Button>
             <Button icon="plus" @click="changeAdjustPrice(10)"></Button>
           </ButtonGroup>
           <Button type="warning" size="large" style="margin-left:10px;" @click="confirmAdjustPrice">调整价格</Button>
-          <span style="color:#a09f9f;font-size: 12px;">（非当天上传的价格无法统一调整）</span>
         </Col>
-      </Row>
+        <Col span="5">
+          <Upload action="/zues/api/upload/excel" >
+          <Button type="info" icon="ios-cloud-upload-outline" size="large">上传价格表</Button>
+          <span style="cursor:pointer;margin-left: 5px;color:#a09f9f;font-size: 12px;">(命名格式：价格表_类型_日期)</span>
+        </Upload>
+        </Col>
+      </Row> 
     </div>
-    <br>
     <ZTable :column="table.column" :config="table.config" :query="searchFrom" ref="price"/>
 
     <Modal v-model="priceModal"> 
@@ -234,7 +234,8 @@
       confirmAdjustPrice () {
         this.$Modal.confirm({
           title: '价格调整',
-          content: `今日价格统一${this.todayPriceParams.adjust>0? "上调：" + this.todayPriceParams.adjust : "下调：" + this.todayPriceParams.adjust} 元`,
+          content: `今日价格统一${this.todayPriceParams.adjust>0? "上调：" + this.todayPriceParams.adjust : "下调：" + this.todayPriceParams.adjust} 元 
+          <br />(非当天上传的价格无法统一调整)`,
           onOk: ()=>{
             this.ajustTodayPrice()
           }

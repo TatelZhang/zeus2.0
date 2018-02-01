@@ -45,8 +45,8 @@
                 axios.get(this.config.url,{params})
                     .then(({data}) => {
                         this.data = data.data.row;
-                        this.page.total = data.data.totalCount;
-                        this.page.current = Number(data.data.page)
+                        this.page.total = data.data.totalCount || 0;    // 当前数据为空指定total为0;
+                        this.page.current = Number(data.data.page) || 1; // 当前数据为空, 指定page为1
                         if(this.data.length === 0 && this.page.current > 1){ // 如果当前页非首页且数据为空, 重新加载
                             this.load({page: this.page.current - 1})
                         }

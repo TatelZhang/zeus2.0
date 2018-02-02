@@ -55,7 +55,7 @@
             padding: 20px 10px;
             background-color: #fff;
             box-shadow: 1px 1px 10px #ccc;
-            // min-height: 600px;
+            min-height: 600px;
             min-width: 1400px;
             text-align: left;
         }

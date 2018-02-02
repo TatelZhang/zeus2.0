@@ -1,6 +1,6 @@
 <template>
     <div class="zeus-table clearfix">
-        <Table stripe border :columns="column" :data="data" :loading="loading" height="740"></Table>
+        <Table stripe border :columns="column" :data="data" :loading="loading" height="740" :row-class-name = "rowClassName"></Table>
         <Page class-name="zeus-pagenation" :total="page.total" :current="page.current" :page-size="page.pageSize" @on-change="handle"></Page>
     </div>
 </template>
@@ -33,6 +33,7 @@
                     }
                 }
             },
+            rowClassName: Function,
             query: Object,
         },
         created() {

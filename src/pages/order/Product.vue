@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="product-container">
     <div class="zeus-search">
       <div class="ivu-row" style="margin-bottom: 20px;">
         <span class="margin-right-10">规格：</span>
@@ -21,11 +21,19 @@
       <span style="font-size: 20px;">厂家现货价格/库存表：</span>
       <Button style="float: right;" type="success" icon="wrench" @click="modalStatus.header = true">自定义表头</Button>
     </div>
-    <ZTable :column="tableHeader" :config="table.config" :query="searchParams" ref="ztable"/>
+    <ZTable :column="tableHeader" :config="table.config" :query="searchParams" ref="ztable" :row-class-name="markRow"/>
     <Modal v-model="modalStatus.header">
-      <CheckboxGroup style="font-size: 14px;" v-model="currHeader">
-        <Checkbox v-for="item in headers" :key="item.key" :label="item.key" style="font-size: 14px;">{{item.title}}</Checkbox>
-      </CheckboxGroup>
+      <h2 slot="header" style="text-align:center">
+      <span>自定义表头</span>
+      </h2>
+      <div style="width: 80%; margin: 0 auto;">
+        <CheckboxGroup style="font-size: 14px;" v-model="currHeader">
+          <Checkbox v-for="item in headers" :key="item.key" :label="item.key" style="font-size: 14px;width:45%;">{{item.title}}</Checkbox>
+        </CheckboxGroup>
+      </div>
+      <div slot="footer">
+        <Button long type="primary" @click="saveHeader">保存</Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -72,11 +80,13 @@
          },
          daPrice: {
            title: '到岸单价',
-           key: 'daPrice'
+           key: 'daPrice',
+           sortable: true
          },
          purePrice: {
            title: '开单价',
-           key: 'purePrice'
+           key: 'purePrice',
+           sortable: true
          },
          inventoryAmount: {
            title: '库存',
@@ -120,7 +130,8 @@
           },
           value: {
             title: '出厂价',
-            key: 'value'
+            key: 'value',
+            sortable: true
           },
           benifit: {
             title: '厂家优惠',
@@ -143,7 +154,8 @@
         },
         table: {
           config: {
-              url: '/zues/api/product/list'
+              url: '/zues/api/product/list',
+              // pageSize: 20
           }
         },
         currHeader: []
@@ -153,6 +165,27 @@
   methods: {
     search() {
       this.$refs.ztable.search();
+    },
+    initHeader () {
+      let header = localStorage.getItem('tableHeaders')
+      header = JSON.parse(header)
+      if (header.length) {
+        this.currHeader = header
+      }else{
+        this.currHeader = ["spec", "long", "lastUpdateTime", "type", "supplierName", "daPrice", "purePrice", "inventoryAmount", "perAmount", "perWeight", "allWeight", "freight", "value", "benifit", "operate"]
+      }
+    },
+    saveHeader () {
+      let list = this.currHeader.slice()
+      if(list.length){
+        localStorage.setItem('tableHeaders', JSON.stringify(list))
+      }
+      this.modalStatus.header = false;
+      this.$Message.success('表头保存成功')
+    },
+    markRow (row, index) {
+      let {mark} = row
+      if(mark) return 'marked-row'
     }
   },
   computed: {
@@ -161,20 +194,11 @@
       let curr = this.currHeader.slice()
       let keys = Object.keys(this.headers)
       for(let key of keys){
-        if(curr.indexOf(key)){
-          console.log(key)
+        if(curr.indexOf(key) !== -1){
           tableHeader.push(this.headers[key])
         }
       }
       return tableHeader
-    },
-    headerList () {
-      let list = []
-      let key = ["spec", "long", "lastUpdateTime", "type", "supplierName", "daPrice", "purePrice", "inventoryAmount", "perAmount", "perWeight", "allWeight", "freight", "value", "benifit", "operate"]
-      for(let key in this.headers){
-        list.push(key)
-      }
-      return list
     }
   },
   filters: {
@@ -193,6 +217,12 @@
   },
   mounted () {
     this.searchParams.comId = getComId()
+    this.initHeader()
   }
 }
 </script>
+<style>
+  .ivu-table .marked-row td{
+    color: red;
+  }
+</style>

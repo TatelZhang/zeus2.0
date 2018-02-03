@@ -59,6 +59,9 @@
             },
             search(){
                 this.load({page: this.page.current});
+            },
+            solveData (index, key, val) {
+                this.data[index][key] = val
             }
         }
     }

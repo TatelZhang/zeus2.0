@@ -54,6 +54,23 @@
       </div>
     </Modal>
     <!--<span class="warn-txt"><span class="red-mark">标记表示库存超期</span><span class="yellow-mark">标记表示虚拟库存</span></span>-->
+    <Modal v-model="modalStatus.deal" width="20%">
+      <h2 slot="header" style="text-align:center">
+        <span>下单操作</span>
+      </h2>
+      <div>
+        <div class="ivu-input-wrapper ivu-input-wrapper-large ivu-input-type ivu-input-group ivu-input-group-large ivu-input-group-with-prepend">
+          <div class="ivu-input-group-prepend">
+            <span>数量</span>
+          </div>
+          <input type="number" class="ivu-input ivu-input-large" placeholder="必填项" v-model.number="chartAmount">
+        </div>
+        <Input type="textarea" :rows="3" placeholder="填写备注" style="margin-top:10px;" v-model="comment"></Input>
+      </div>
+      <div slot="footer">
+        <Button long type="primary" @click="dealConfirm">确认</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -61,6 +78,11 @@
    function getComId() {
     let cookies = document.cookie
     let res = cookies.match(/comId=(\d*);/)
+    return res[1]
+  }
+   function getUserId() {
+    let cookies = document.cookie
+    let res = cookies.match(/userId=(\d*);/)
     return res[1]
   }
   export default {
@@ -81,11 +103,13 @@
         headers: {
          spec: {
            title: '规格',
-           key: 'spec'
+           key: 'spec',
+           width: 110
          },
          long: {
            title: '长度',
-           key: 'long'
+           key: 'long',
+           width: 80
          },
          lastUpdateTime: {
            title: '更新时间',
@@ -107,11 +131,13 @@
          purePrice: {
            title: '开单价',
            key: 'purePrice',
-           sortable: true
+           sortable: true,
+           className: 'special-column'
          },
          inventoryAmount: {
            title: '库存',
-           key: 'inventoryAmount'
+           key: 'inventoryAmount',
+           className: 'special-column'
          },
          perAmount: {
            title: '包装',
@@ -152,11 +178,24 @@
           value: {
             title: '出厂价',
             key: 'value',
-            sortable: true
+            sortable: true,
+            className: 'special-column'
           },
           benifit: {
             title: '厂家优惠',
-            key: 'benifit'
+            key: 'benifit',
+            render: (h, p) => {
+              let {row: {benifit, benifitAdjust, purePrice}} = p
+              let up = h('Icon', {props: {type: 'arrow-up-c'}})
+              let down = h('Icon', {props: {type: 'arrow-down-c'}})
+              let priceStatus = ''
+              if(benifitAdjust > 0 && purePrice){
+                priceStatus = h('span', {style: {marginLeft: '5px', color: '#13ce66', fontSize: '10px'}}, [down, Math.abs(benifitAdjust)])
+              }else if(benifitAdjust < 0 && purePrice){
+                priceStatus = h('span', {style: {marginLeft: '5px', color: 'red', fontSize: '10px'}}, [up, Math.abs(benifitAdjust)])
+              }
+              return h('div', [benifit, priceStatus])
+            }
           },
           operate: {
             title: '操作',
@@ -164,7 +203,7 @@
             align: 'center',
             key: 'operate',
             render: (h, p) => {
-              let {row: {mark, supplierInventoryId}, index} = p
+              let {row: {mark, supplierInventoryId, value}, index} = p
               let button = h('Button', {
                 props: {type: 'info'}, 
                 on: {
@@ -187,7 +226,13 @@
                 {
                   'class': ['margin-right-10'],
                   props: {
-                    type: 'success'
+                    type: 'success',
+                    disabled: !value
+                  },
+                  on: {
+                    click: () => {
+                      this.startDeal (supplierInventoryId)
+                    }
                   }
                 }, 
                 '下单'),
@@ -207,7 +252,11 @@
           mark: '1',
           supplierInventoryId: '',
           index: ''
-      }
+        },
+        // 下单参数
+        chartAmount: 1,
+        comment: '',
+        supplierInventoryId: ''
     }
   },
   mixins: [Emitter],
@@ -262,6 +311,34 @@
     },
     cancelMark (id, index){
       this.doMark({supplierInventoryId: id, mark: '', index})
+    },
+    startDeal (id) {
+      this.modalStatus.deal = true;
+      this.chartAmount = 1
+      this.comment = ''
+      this.supplierInventoryId = id
+    },
+    dealConfirm () {
+      let params = {}
+      params.comId = getComId()
+      params.chartAmount = this.chartAmount
+      params.comment = this.comment
+      params.supplierInventoryId = this.supplierInventoryId
+      params.userId = getUserId()
+      axios.post('/zues/api/chart/addToChart', params).then(({status, data}) => {
+        console.log(status, params)
+        if(status === 200 && data.code === 200){
+          this.$Message.success(data.msg)
+          this.modalStatus.deal = false
+        }
+      })
+    }
+  },
+  watch: {
+    chartAmount (val, oldVal) {
+      if(val < 0){
+        this.chartAmount = oldVal
+      }
     }
   },
   computed: {
@@ -303,5 +380,10 @@
   }
   .ivu-table .yellow-mark td{
     color: #f7ba2a;
+  }
+  .ivu-table td.special-column {
+    color: red;
+    text-decoration: underline;
+    font-weight: bold;
   }
 </style>

@@ -99,7 +99,8 @@ export default new Router({
     }, {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      meta: {title: '欢迎登陆奎鑫采销系统'}
     }
   ]
 })

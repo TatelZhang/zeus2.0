@@ -15,7 +15,7 @@
             </Submenu>
             <Submenu name="宙斯报价" v-if="menuList.order.length > 0">
                 <template slot="title">
-                    <Icon type="arrow-graph-down-left"></Icon>
+                    <Icon type="arrow-graph-up-right"></Icon>
                     宙斯报价
                 </template>
                 <MenuItem :name="item.link" v-for="item in menuList.order" :key="item.link">

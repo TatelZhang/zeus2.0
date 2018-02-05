@@ -26,7 +26,7 @@
         <div class="ivu-input-group-prepend">
           <span>库存数量(件)</span>
         </div>
-        <input type="number" class="ivu-input ivu-input-large" placeholder="库存数量" v-model="inventoryParams.inventoryAmount">
+        <input type="number" class="ivu-input ivu-input-large" placeholder="库存数量" v-model.number="inventoryParams.inventoryAmount">
       </div>
     </Modal>
   </div>
@@ -169,6 +169,7 @@
     color: #fff; */
     }
   .ivu-table td.inventory-column{
-    color: #2db7f5;
+    color: red;
+    text-decoration: underline;
     }
 </style>

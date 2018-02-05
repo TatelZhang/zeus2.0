@@ -24,7 +24,7 @@
     <ZTable :column="tableHeader" :config="table.config" :query="searchParams" ref="ztable" :row-class-name="markRow"/>
     <Modal v-model="modalStatus.header">
       <h2 slot="header" style="text-align:center">
-      <span>自定义表头</span>
+        <span>自定义表头</span>
       </h2>
       <div style="width: 80%; margin: 0 auto;">
         <CheckboxGroup style="font-size: 14px;" v-model="currHeader">
@@ -82,7 +82,7 @@
   }
    function getUserId() {
     let cookies = document.cookie
-    let res = cookies.match(/userId=(\d*);/)
+    let res = cookies.match(/userId=(\w*);/)
     return res[1]
   }
   export default {
@@ -266,10 +266,20 @@
     },
     initHeader () { // 初始化行
       let header = localStorage.getItem('tableHeaders')
-      header = JSON.parse(header)
-      if (header.length) {
-        this.currHeader = header
-      }else{
+      // header = JSON.parse(header) // JSON 不能 parse 空字符串
+      // if (header && header.length) { // header 不为 null 或为 []
+      //   this.currHeader = header
+      // }else{
+      //   this.currHeader = ["spec", "long", "lastUpdateTime", "type", "supplierName", "daPrice", "purePrice", "inventoryAmount", "perAmount", "perWeight", "allWeight", "freight", "value", "benifit", "operate"]
+      // }
+      try {
+        header = JSON.parse(header)
+        if(header.length){
+          this.currHeader = header
+        }else {
+          throw new Error();
+        }
+      } catch (error) {
         this.currHeader = ["spec", "long", "lastUpdateTime", "type", "supplierName", "daPrice", "purePrice", "inventoryAmount", "perAmount", "perWeight", "allWeight", "freight", "value", "benifit", "operate"]
       }
     },
@@ -277,9 +287,9 @@
       let list = this.currHeader.slice()
       if(list.length){
         localStorage.setItem('tableHeaders', JSON.stringify(list))
+        this.$Message.success('表头保存成功')
       }
       this.modalStatus.header = false;
-      this.$Message.success('表头保存成功')
     },
     markRow (row, index) { // 显示标记类型行
       let {mark} = row
@@ -326,7 +336,6 @@
       params.supplierInventoryId = this.supplierInventoryId
       params.userId = getUserId()
       axios.post('/zues/api/chart/addToChart', params).then(({status, data}) => {
-        console.log(status, params)
         if(status === 200 && data.code === 200){
           this.$Message.success(data.msg)
           this.modalStatus.deal = false

@@ -22,11 +22,14 @@ export default {
 		margin-left: 10px;
 		margin-right: 10px;
 	}
-	.margin-left-10 {
+	.margin-left-10{
 		margin-left: 10px;
 	}
-	.margin-right-10 {
+	.margin-right-10{
 		margin-right: 10px;
+	}
+	.margin-bottom-10 {
+		margin-bottom: 10px;
 	}
 	input[type=number]{
     	-moz-appearance:textfield;

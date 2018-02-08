@@ -73,6 +73,16 @@
   </div>
 </template>
 <script>
+  function getComId() {
+    let cookies = document.cookie
+    let res = cookies.match(/comId=(\d*);/)
+    return res[1]
+  }
+  function getUserId() {
+    let cookies = document.cookie
+    let res = cookies.match(/userId=(\w*);/)
+    return res[1]
+  }
   export default {
     data () {
       return {
@@ -233,6 +243,7 @@
         },
         currRow: {},        // 当前修改选中行
         adjustPrice: 0,
+        submitRow: []
       }
     },
     methods: {
@@ -328,7 +339,7 @@
         }
         this.cartData[index] = this.currRow
       },
-      confirmChange () {    // 确认更改
+      confirmChange () {    // 更改购物车确定
         this.currRow.chartAmount = this.changeParams.chartAmount
         this.currRow.chartAdjust = this.changeParams.chartAdjust
         this.currRow.comment = this.changeParams.comment
@@ -372,7 +383,7 @@
           this.$Message.info('请选择商品')
         }
       },
-      confirmAdjust () {
+      confirmAdjust () {    // 采购议价调整
         this.cartData.map((item) => {
           if(this.checkedId.indexOf(item.chartId) > -1){
             item.chartAdjust = -(this.adjustPrice || 0)
@@ -384,23 +395,38 @@
         })
       },
       submitCart () {
-        const params = {orderAdjust: this.checkedAdjust, orderPrice: this.checkedPrice, orderWeight: this.checkedWeight}
-        axios.post('/zues/api/order/add', params).then((res) => {
-          console.log(res)
+        const params = {
+          orderAdjust: this.checkedAdjust, 
+          orderPrice: this.checkedPrice, 
+          orderWeight: this.checkedWeight,
+          comId: getComId(),
+          userId: getUserId()
+          }
+          params.supplierInventoryIds = this.submitRow.slice()
+        axios.post('/zues/api/order/add', params).then(({status, data}) => {
+          if(status === 200 && data.code === 200){
+            this.$Message.success(data.msg)
+            this.getData()
+            this.solveColumnChange([])
+          }else{
+            this.$Message.error(data.msg || '请确认购物车')
+          }
         })
       },
-      changeCheckedData () {
+      changeCheckedData () {  // 已选商品信息显示及更新
         let p = 0
         let w = 0
         let a = 0
         this.checkedPrice = '0.00'
         this.checkedWeight = '0.00'
+        this.submitRow = []
         this.cartData.map((item) => {
           if(this.checkedId.indexOf(item.chartId) > -1){
             let {totalPrice, chartWeight, totalAdjust} = item
             p += Number(totalPrice) || 0
             w += Number(chartWeight) || 0
             a += Number(totalAdjust) || 0
+            this.submitRow.push(item)
           }
         })
         this.checkedPrice = p.toFixed(2)

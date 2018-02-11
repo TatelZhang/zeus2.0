@@ -133,13 +133,16 @@
         table: {
           baseHeaders: [
             {
-            title: '#',
+            // title: '#',
+            // width: 60,
+            // align: 'center',
+            // render: (h, p) =>{
+            //   let {row:{_index}} = p
+            //   return _index+1
+            // }
+            type: 'index',
             width: 60,
-            align: 'center',
-            render: (h, p) =>{
-              let {row:{_index}} = p
-              return _index+1
-            }
+            align: 'center'
           },
           {
             title: '销售',

@@ -28,7 +28,7 @@ export default new Router({
         },{
           path: '/demandprice',
           name: 'demandprice',
-          component: (resolve) => require(['@/pages/order/demandprice'], resolve),
+          component: (resolve) => require(['@/pages/order/Demandprice'], resolve),
           meta: {title: "需求报价", page: "宙斯报价"}
         },{
           path: '/order',

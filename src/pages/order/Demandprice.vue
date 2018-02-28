@@ -166,7 +166,7 @@
             }, '需求报价')
           }
         },
-        detail: {
+        detail: {  // detail数据
           loading: true,
           demandNo: '',
           data: [], // 需求明细数据
@@ -256,17 +256,17 @@
       search () {
         this.$refs.table.search()
       },
-      getTime(p, target) {
+      getTime(p, target) {  // 辅助函数，获取格式化时间 
         const tar = p.row[target]
         if(!tar) return 
         return new Date(tar).formatDate('yyyy-MM-dd hh:mm')
       },
-      getTimeDelay (p) {
+      getTimeDelay (p) {  // 辅助函数，获取延时 
         const {row: {priceTime, createTime}} = p
         if(!priceTime) return '未报价'
         return Math.ceil((priceTime - createTime) / 1000 / 60) + '分钟'
       },
-      getResult (p) {
+      getResult (p) {  // 辅助函数，获取结果
         const {row: {state}} = p
         for(let item in this.demandState){
           if(this.demandState[item].key === state){
@@ -274,11 +274,11 @@
           }
         }
       },
-      changeDemand (demand) {
+      changeDemand (demand) { // 更改需求类型
         this.searchParams.state = this.demandState[demand].key
         this.$refs.table.load({page: 1})
       },
-      showView (p, price=false) {
+      showView (p, price=false) {  // 展示模态框
         const {row: {destination, demandWeight, comment, priceComment, demandNo}} = p
         this.detail.destination = destination
         this.detail.demandWeight = demandWeight
@@ -291,7 +291,7 @@
           this.modalStatus.view = true
         }
       },
-      getDetail (demandNo) {
+      getDetail (demandNo) {  // 获取需求详细
         this.detail.loading = true
         axios.get('/zues/api/demand/detail', {params: {demandNo}}).then(({status, data}) => {
           if(status === 200 && data.code === 200) {
@@ -301,7 +301,7 @@
           }
         })
       },
-      updateDemand (submit=false) {
+      updateDemand (submit=false) {  // 保存或提交报价
         let url = '/zues/api/demand/save'
         if(submit) url = '/zues/api/demand/price'
         const params = {}

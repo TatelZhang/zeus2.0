@@ -1,7 +1,7 @@
 <template>
     <div class="zeus-header">
         <Avatar icon="person" size="small" class="avatar"/>
-        <span class="user-name">费仁杰</span>
+        <span class="user-name">{{username}}</span>
         <span class="logout" @click="logout"><Icon type="power"/>退出登录</span>
     </div>
 </template>
@@ -34,10 +34,15 @@
     }
 </style>
 <script>
+    function getUser () {
+        const c = document.cookie;
+        const user = c.match(/userId=(\w*);/)[1] || 'guest'
+        return user
+    }
     export default {
         data () {
             return {
-
+                username: ''
             }
         },
         name: "ZHeader",
@@ -51,6 +56,9 @@
                         }
                     })
             }
+        },
+        mounted () {
+            this.username = getUser()
         }
     }
 </script>

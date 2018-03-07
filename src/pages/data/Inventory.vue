@@ -7,7 +7,7 @@
       <ZSelect v-model="inventory.type" size="large" placeholder="类型" :data="materialType" style="display:inline-block; width:211px;"></ZSelect>
       <span class="margin-10">供应商名称：</span>
       <Input placeholder="供应商：支持模糊查询" v-model="inventory.supplierName" size="large" style="display:inline-block; width:211px;"></Input>
-      <span class="margin-10">供应商名称：</span>
+      <span class="margin-10">所在地：</span>
       <ZSelect v-model="inventory.address" size="large" placeholder="供应商所在地" data="/zues/api/supplier/address" keyValue="address-address" style="display:inline-block; width:211px;"></ZSelect>
       <Button size="large" icon="ios-search" type="primary" @click="searchInventory" class="margin-10">查询</Button>
     </div>
